@@ -7,7 +7,7 @@
 
 get_header();
 
-$uc_title    = esc_html( get_theme_mod( 'deepstudio_cs_title',    'Under Construction'                                     ) );
+$uc_title    = esc_html( get_theme_mod( 'deepstudio_cs_title',    'Under Construction Website'                             ) );
 $uc_subtitle = esc_html( get_theme_mod( 'deepstudio_cs_subtitle', 'Please fill the form, we will contact you very soon.'  ) );
 $cf7_id      = absint(   get_theme_mod( 'deepstudio_cf7_id',      0                                                        ) );
 ?>
@@ -25,8 +25,11 @@ $cf7_id      = absint(   get_theme_mod( 'deepstudio_cf7_id',      0             
 		<canvas id="logo-canvas"></canvas>
 	</div>
 
-	<!-- "CREATIVE" particle text canvas (original) -->
+	<!-- "CREATIVE" particle text canvas -->
 	<canvas id="text-canvas"></canvas>
+
+	<!-- "STUDIO" particle text canvas -->
+	<canvas id="studio-canvas"></canvas>
 
 	<!-- Under Construction section -->
 	<div class="uc-section">

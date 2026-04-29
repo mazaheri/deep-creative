@@ -115,7 +115,7 @@ add_action( 'customize_register', function ( $wp_customize ) {
 
 	// Title
 	$wp_customize->add_setting( 'deepstudio_cs_title', array(
-		'default'           => 'Under Construction',
+		'default'           => 'Under Construction Website',
 		'sanitize_callback' => 'sanitize_text_field',
 		'transport'         => 'postMessage',
 	) );

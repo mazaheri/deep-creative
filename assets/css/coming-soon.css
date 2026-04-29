@@ -28,7 +28,7 @@
 .uc-subtitle {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
-    font-size: clamp(0.85rem, 2.2vw, 1.05rem);
+    font-size: clamp(0.9rem, 2vw, 1.12rem);
     letter-spacing: 0.06em;
     color: #7dd3fc;
     text-shadow:
@@ -37,7 +37,7 @@
         0 0 50px rgba(14, 165, 233, 0.35);
     margin: 0 0 32px;
     text-align: center;
-    max-width: 420px;
+    max-width: 520px;
     line-height: 1.65;
     animation: neon-pulse-title 3s ease-in-out infinite alternate;
 }
@@ -59,19 +59,19 @@
     animation: separator-glow 2.2s ease-in-out infinite alternate;
 }
 
-/* ---- Form container ---- */
+/* ---- Form container — transparent so stars show through ---- */
 .neon-form-wrap {
     width: 100%;
     max-width: 520px;
-    background: rgba(2, 6, 23, 0.78);
+    background: rgba(2, 6, 23, 0.38);
     border: 1px solid rgba(14, 165, 233, 0.35);
     border-radius: 12px;
     padding: 36px 32px;
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
     box-shadow:
         0 0 24px rgba(14, 165, 233, 0.12),
-        inset 0 0 32px rgba(14, 165, 233, 0.04);
+        inset 0 0 32px rgba(14, 165, 233, 0.03);
     box-sizing: border-box;
 }
 
@@ -268,14 +268,28 @@
     to   { box-shadow: 0 0 20px rgba(14, 165, 233, 0.46); }
 }
 
-/* ---- Responsive ---- */
+/* ---- Desktop: subtitle stays on one line, gets a top gap ---- */
+@media (min-width: 768px) {
+    .uc-subtitle {
+        white-space: nowrap;
+        max-width: none;
+        margin-top: 36px;
+        font-size: 1.12rem;
+    }
+
+    .uc-section {
+        margin-top: 44px;
+    }
+}
+
+/* ---- Mobile ---- */
 @media (max-width: 600px) {
     .neon-form-wrap {
         padding: 26px 16px;
     }
 
     .uc-section {
-        margin-top: 32px;
+        margin-top: 24px;
     }
 
     .uc-separator {
@@ -283,6 +297,17 @@
     }
 
     #ui-layer {
-        padding: 60px 16px 48px;
+        padding: 40px 16px 48px;
+    }
+
+    #text-canvas,
+    #studio-canvas {
+        width: 320px;
+        height: 74px;
+    }
+
+    #logo-canvas {
+        width: 220px;
+        height: 220px;
     }
 }
