@@ -61,6 +61,14 @@ function deepstudio_enqueue_assets() {
 		DEEPSTUDIO_VERSION
 	);
 
+	// Coming Soon neon form styles
+	wp_enqueue_style(
+		'deepstudio-coming-soon',
+		get_template_directory_uri() . '/assets/css/coming-soon.css',
+		array( 'deepstudio-style' ),
+		DEEPSTUDIO_VERSION
+	);
+
 	// Particle animation script (loaded in footer so DOM is ready)
 	wp_enqueue_script(
 		'deepstudio-particles',
@@ -94,3 +102,57 @@ remove_action( 'wp_head', 'wp_generator' );
 remove_action( 'wp_head', 'rsd_link' );
 remove_action( 'wp_head', 'wlwmanifest_link' );
 remove_action( 'wp_head', 'wp_shortlink_wp_head' );
+
+/* ------------------------------------------------------------------
+   Customizer — Coming Soon settings (v7: every string is dynamic)
+   ------------------------------------------------------------------ */
+add_action( 'customize_register', function ( $wp_customize ) {
+
+	$wp_customize->add_section( 'deepstudio_coming_soon', array(
+		'title'    => __( 'Coming Soon', 'deepstudio' ),
+		'priority' => 30,
+	) );
+
+	// Title
+	$wp_customize->add_setting( 'deepstudio_cs_title', array(
+		'default'           => 'Coming Soon',
+		'sanitize_callback' => 'sanitize_text_field',
+		'transport'         => 'postMessage',
+	) );
+	$wp_customize->add_control( 'deepstudio_cs_title', array(
+		'label'   => __( 'Heading', 'deepstudio' ),
+		'section' => 'deepstudio_coming_soon',
+		'type'    => 'text',
+	) );
+
+	// Subtitle
+	$wp_customize->add_setting( 'deepstudio_cs_subtitle', array(
+		'default'           => 'Under Creative',
+		'sanitize_callback' => 'sanitize_text_field',
+		'transport'         => 'postMessage',
+	) );
+	$wp_customize->add_control( 'deepstudio_cs_subtitle', array(
+		'label'   => __( 'Sub-heading', 'deepstudio' ),
+		'section' => 'deepstudio_coming_soon',
+		'type'    => 'text',
+	) );
+
+	// CF7 form ID
+	$wp_customize->add_setting( 'deepstudio_cf7_id', array(
+		'default'           => 0,
+		'sanitize_callback' => 'absint',
+	) );
+	$wp_customize->add_control( 'deepstudio_cf7_id', array(
+		'label'       => __( 'Contact Form 7 — Form ID', 'deepstudio' ),
+		'description' => __( 'Enter the numeric ID of your CF7 form (found in CF7 form list).', 'deepstudio' ),
+		'section'     => 'deepstudio_coming_soon',
+		'type'        => 'number',
+	) );
+} );
+
+/* ------------------------------------------------------------------
+   Demo importer (admin only)
+   ------------------------------------------------------------------ */
+if ( is_admin() ) {
+	require get_template_directory() . '/inc/demo-importer.php';
+}

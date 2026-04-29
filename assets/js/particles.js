@@ -3,9 +3,9 @@
 const canvas = document.getElementById('particleCanvas');
 const ctx = canvas.getContext('2d');
 const logoCanvas = document.getElementById('logo-canvas');
-const lctx = logoCanvas.getContext('2d', { willReadFrequently: true });
+const lctx = logoCanvas ? logoCanvas.getContext('2d', { willReadFrequently: true }) : null;
 const textCanvas = document.getElementById('text-canvas');
-const tctx = textCanvas.getContext('2d', { willReadFrequently: true });
+const tctx = textCanvas ? textCanvas.getContext('2d', { willReadFrequently: true }) : null;
 
 let width, height;
 let particles = [];
@@ -201,11 +201,15 @@ function resize() {
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
 
-    logoCanvas.width = 250;
-    logoCanvas.height = 250;
+    if (logoCanvas) {
+        logoCanvas.width = 250;
+        logoCanvas.height = 250;
+    }
 
-    textCanvas.width = 400;
-    textCanvas.height = 100;
+    if (textCanvas) {
+        textCanvas.width = 400;
+        textCanvas.height = 100;
+    }
 
     init();
 }
@@ -219,8 +223,8 @@ function init() {
     for (let i = 0; i < METEOR_COUNT; i++) {
         meteors.push(new Meteor());
     }
-    loadLogo();
-    initText();
+    if (logoCanvas) loadLogo();
+    if (textCanvas) initText();
 }
 
 function loadLogo() {
@@ -278,8 +282,8 @@ function initText() {
 
 function animate() {
     ctx.clearRect(0, 0, width, height);
-    lctx.clearRect(0, 0, 250, 250);
-    tctx.clearRect(0, 0, 400, 100);
+    if (lctx) lctx.clearRect(0, 0, 250, 250);
+    if (tctx) tctx.clearRect(0, 0, 400, 100);
 
     particles.forEach(p => {
         p.update();
@@ -291,15 +295,19 @@ function animate() {
         m.draw(ctx);
     });
 
-    logoParticles.forEach(p => {
-        p.update();
-        p.draw(lctx);
-    });
+    if (lctx) {
+        logoParticles.forEach(p => {
+            p.update();
+            p.draw(lctx);
+        });
+    }
 
-    textParticles.forEach(p => {
-        p.update();
-        p.draw(tctx);
-    });
+    if (tctx) {
+        textParticles.forEach(p => {
+            p.update();
+            p.draw(tctx);
+        });
+    }
 
     requestAnimationFrame(animate);
 }

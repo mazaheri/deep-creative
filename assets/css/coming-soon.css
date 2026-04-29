@@ -1,0 +1,310 @@
+/* =============================================================
+   DeepStudio — Coming Soon / Neon CF7 Form
+   ============================================================= */
+
+/* ---- Page layout ---- */
+#coming-soon-layer {
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px 60px;
+    box-sizing: border-box;
+}
+
+/* ---- Logo canvas (scaled down from 250px render size) ---- */
+.cs-logo {
+    margin-bottom: 24px;
+}
+
+.cs-logo #logo-canvas {
+    width: 130px;
+    height: 130px;
+}
+
+/* ---- Headings ---- */
+.cs-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2.2rem, 8vw, 4.8rem);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7dd3fc;
+    text-shadow:
+        0 0 10px rgba(125, 211, 252, 0.8),
+        0 0 30px rgba(14, 165, 233, 0.6),
+        0 0 60px rgba(14, 165, 233, 0.35);
+    margin: 0 0 10px;
+    text-align: center;
+    animation: neon-pulse-title 3s ease-in-out infinite alternate;
+}
+
+.cs-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: clamp(0.8rem, 2.8vw, 1.15rem);
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: #38bdf8;
+    text-shadow: 0 0 14px rgba(56, 189, 248, 0.55);
+    margin: 0 0 36px;
+    text-align: center;
+}
+
+/* ---- Separator ---- */
+.cs-separator {
+    width: 200px;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #0ea5e9,
+        #7dd3fc,
+        #0ea5e9,
+        transparent
+    );
+    box-shadow: 0 0 10px rgba(14, 165, 233, 0.5);
+    margin: 0 auto 48px;
+    animation: separator-glow 2.2s ease-in-out infinite alternate;
+}
+
+/* ---- Form container ---- */
+.neon-form-wrap {
+    width: 100%;
+    max-width: 520px;
+    background: rgba(2, 6, 23, 0.78);
+    border: 1px solid rgba(14, 165, 233, 0.35);
+    border-radius: 12px;
+    padding: 40px 36px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow:
+        0 0 24px rgba(14, 165, 233, 0.12),
+        inset 0 0 32px rgba(14, 165, 233, 0.04);
+    box-sizing: border-box;
+}
+
+/* ---- CF7 reset ---- */
+.neon-form-wrap .wpcf7 {
+    margin: 0;
+}
+
+.neon-form-wrap .wpcf7-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ---- Labels ---- */
+.neon-form-wrap label,
+.neon-form-wrap .wpcf7-form label {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #38bdf8;
+    margin-bottom: 8px;
+}
+
+.neon-form-wrap .wpcf7-form-control-wrap {
+    display: block;
+    width: 100%;
+}
+
+/* ---- Inputs & textarea ---- */
+.neon-form-wrap input[type="text"],
+.neon-form-wrap input[type="email"],
+.neon-form-wrap input[type="tel"],
+.neon-form-wrap input[type="url"],
+.neon-form-wrap textarea,
+.neon-form-wrap select {
+    width: 100%;
+    background: rgba(14, 165, 233, 0.04);
+    border: 1px solid rgba(14, 165, 233, 0.38);
+    border-radius: 6px;
+    padding: 13px 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.93rem;
+    color: #bae6fd;
+    outline: none;
+    transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+    box-sizing: border-box;
+    caret-color: #7dd3fc;
+    -webkit-appearance: none;
+}
+
+.neon-form-wrap input[type="text"]::placeholder,
+.neon-form-wrap input[type="email"]::placeholder,
+.neon-form-wrap input[type="tel"]::placeholder,
+.neon-form-wrap textarea::placeholder {
+    color: rgba(125, 211, 252, 0.3);
+}
+
+.neon-form-wrap input[type="text"]:focus,
+.neon-form-wrap input[type="email"]:focus,
+.neon-form-wrap input[type="tel"]:focus,
+.neon-form-wrap input[type="url"]:focus,
+.neon-form-wrap textarea:focus,
+.neon-form-wrap select:focus {
+    border-color: #0ea5e9;
+    background: rgba(14, 165, 233, 0.07);
+    box-shadow:
+        0 0 0 3px rgba(14, 165, 233, 0.13),
+        0 0 18px rgba(14, 165, 233, 0.18);
+}
+
+.neon-form-wrap textarea {
+    resize: vertical;
+    min-height: 110px;
+}
+
+/* ---- Submit button ---- */
+.neon-form-wrap input[type="submit"],
+.neon-form-wrap .wpcf7-submit {
+    width: 100%;
+    padding: 14px 24px;
+    background: transparent;
+    border: 1px solid #0ea5e9;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #7dd3fc;
+    cursor: pointer;
+    transition: background 0.25s, box-shadow 0.25s, color 0.25s;
+    box-shadow: 0 0 10px rgba(14, 165, 233, 0.2);
+    animation: btn-glow-idle 2.6s ease-in-out infinite alternate;
+}
+
+.neon-form-wrap input[type="submit"]:hover,
+.neon-form-wrap .wpcf7-submit:hover {
+    background: rgba(14, 165, 233, 0.1);
+    color: #e0f2fe;
+    box-shadow:
+        0 0 22px rgba(14, 165, 233, 0.55),
+        0 0 44px rgba(14, 165, 233, 0.28);
+}
+
+.neon-form-wrap input[type="submit"]:active,
+.neon-form-wrap .wpcf7-submit:active {
+    transform: scale(0.98);
+}
+
+/* ---- Spinner (CF7 loading state) ---- */
+.neon-form-wrap .wpcf7-spinner {
+    display: none;
+}
+
+/* ---- Validation messages ---- */
+.neon-form-wrap .wpcf7-not-valid-tip {
+    color: #f87171;
+    font-size: 0.76rem;
+    margin-top: 5px;
+    display: block;
+    letter-spacing: 0.05em;
+}
+
+.neon-form-wrap .wpcf7-response-output {
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 0.83rem;
+    letter-spacing: 0.04em;
+    margin-top: 0 !important;
+    border: none !important;
+}
+
+.neon-form-wrap .wpcf7-mail-sent-ok {
+    background: rgba(34, 197, 94, 0.09);
+    border: 1px solid rgba(34, 197, 94, 0.38) !important;
+    color: #86efac;
+    box-shadow: 0 0 14px rgba(34, 197, 94, 0.18);
+}
+
+.neon-form-wrap .wpcf7-mail-sent-ng,
+.neon-form-wrap .wpcf7-spam-blocked {
+    background: rgba(239, 68, 68, 0.09);
+    border: 1px solid rgba(239, 68, 68, 0.38) !important;
+    color: #fca5a5;
+    box-shadow: 0 0 14px rgba(239, 68, 68, 0.18);
+}
+
+.neon-form-wrap .wpcf7-validation-errors {
+    background: rgba(234, 179, 8, 0.09);
+    border: 1px solid rgba(234, 179, 8, 0.38) !important;
+    color: #fde047;
+}
+
+/* ---- Plugin-not-active notice ---- */
+.cs-plugin-notice {
+    color: #7dd3fc;
+    text-align: center;
+    letter-spacing: 0.08em;
+    font-size: 0.9rem;
+    opacity: 0.7;
+    margin: 0;
+}
+
+/* ---- reCAPTCHA badge ---- */
+.neon-form-wrap .g-recaptcha {
+    margin: 4px 0;
+}
+
+/* ---- Animations ---- */
+@keyframes neon-pulse-title {
+    from {
+        text-shadow:
+            0 0 10px rgba(125, 211, 252, 0.8),
+            0 0 30px rgba(14, 165, 233, 0.55),
+            0 0 60px rgba(14, 165, 233, 0.3);
+    }
+    to {
+        text-shadow:
+            0 0 16px rgba(125, 211, 252, 1),
+            0 0 44px rgba(14, 165, 233, 0.9),
+            0 0 90px rgba(14, 165, 233, 0.55),
+            0 0 130px rgba(14, 165, 233, 0.25);
+    }
+}
+
+@keyframes separator-glow {
+    from { box-shadow: 0 0 7px rgba(14, 165, 233, 0.35); }
+    to   { box-shadow: 0 0 22px rgba(14, 165, 233, 0.85); }
+}
+
+@keyframes btn-glow-idle {
+    from { box-shadow: 0 0 8px rgba(14, 165, 233, 0.18); }
+    to   { box-shadow: 0 0 20px rgba(14, 165, 233, 0.48); }
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 600px) {
+    .neon-form-wrap {
+        padding: 28px 18px;
+    }
+
+    #coming-soon-layer {
+        padding: 60px 16px 40px;
+    }
+
+    .cs-separator {
+        width: 140px;
+    }
+
+    .cs-logo #logo-canvas {
+        width: 100px;
+        height: 100px;
+    }
+}
+
+@media (max-width: 360px) {
+    .neon-form-wrap {
+        padding: 22px 14px;
+    }
+}
