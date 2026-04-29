@@ -115,7 +115,7 @@ add_action( 'customize_register', function ( $wp_customize ) {
 
 	// Title
 	$wp_customize->add_setting( 'deepstudio_cs_title', array(
-		'default'           => 'Coming Soon',
+		'default'           => 'Under Construction',
 		'sanitize_callback' => 'sanitize_text_field',
 		'transport'         => 'postMessage',
 	) );
@@ -127,7 +127,7 @@ add_action( 'customize_register', function ( $wp_customize ) {
 
 	// Subtitle
 	$wp_customize->add_setting( 'deepstudio_cs_subtitle', array(
-		'default'           => 'Under Creative',
+		'default'           => 'Please fill the form, we will contact you very soon.',
 		'sanitize_callback' => 'sanitize_text_field',
 		'transport'         => 'postMessage',
 	) );

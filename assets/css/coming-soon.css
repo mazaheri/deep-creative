@@ -1,62 +1,50 @@
 /* =============================================================
-   DeepStudio — Coming Soon / Neon CF7 Form
+   DeepStudio — Under Construction + Neon CF7 Form
    ============================================================= */
 
-/* ---- Page layout ---- */
-#coming-soon-layer {
-    position: relative;
-    z-index: 10;
-    min-height: 100vh;
+/* ---- Under Construction block (sits below the CREATIVE canvas) ---- */
+.uc-section {
+    pointer-events: auto;           /* form must be clickable */
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 80px 20px 60px;
-    box-sizing: border-box;
-}
-
-/* ---- Logo canvas (scaled down from 250px render size) ---- */
-.cs-logo {
-    margin-bottom: 24px;
-}
-
-.cs-logo #logo-canvas {
-    width: 130px;
-    height: 130px;
+    width: 100%;
+    margin-top: 48px;
 }
 
 /* ---- Headings ---- */
-.cs-title {
+.uc-title {
     font-family: 'Inter', sans-serif;
     font-weight: 700;
-    font-size: clamp(2.2rem, 8vw, 4.8rem);
-    letter-spacing: 0.15em;
+    font-size: clamp(1.6rem, 5vw, 2.8rem);
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: #7dd3fc;
     text-shadow:
         0 0 10px rgba(125, 211, 252, 0.8),
-        0 0 30px rgba(14, 165, 233, 0.6),
-        0 0 60px rgba(14, 165, 233, 0.35);
-    margin: 0 0 10px;
+        0 0 28px rgba(14, 165, 233, 0.6),
+        0 0 55px rgba(14, 165, 233, 0.35);
+    margin: 0 0 14px;
     text-align: center;
     animation: neon-pulse-title 3s ease-in-out infinite alternate;
 }
 
-.cs-subtitle {
+.uc-subtitle {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
-    font-size: clamp(0.8rem, 2.8vw, 1.15rem);
-    letter-spacing: 0.45em;
-    text-transform: uppercase;
+    font-size: clamp(0.8rem, 2.2vw, 1rem);
+    letter-spacing: 0.06em;
     color: #38bdf8;
-    text-shadow: 0 0 14px rgba(56, 189, 248, 0.55);
-    margin: 0 0 36px;
+    text-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
+    margin: 0 0 32px;
     text-align: center;
+    max-width: 440px;
+    line-height: 1.6;
 }
 
 /* ---- Separator ---- */
-.cs-separator {
-    width: 200px;
+.uc-separator {
+    width: 180px;
     height: 1px;
     background: linear-gradient(
         90deg,
@@ -67,7 +55,7 @@
         transparent
     );
     box-shadow: 0 0 10px rgba(14, 165, 233, 0.5);
-    margin: 0 auto 48px;
+    margin: 0 auto 40px;
     animation: separator-glow 2.2s ease-in-out infinite alternate;
 }
 
@@ -78,7 +66,7 @@
     background: rgba(2, 6, 23, 0.78);
     border: 1px solid rgba(14, 165, 233, 0.35);
     border-radius: 12px;
-    padding: 40px 36px;
+    padding: 36px 32px;
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     box-shadow:
@@ -95,7 +83,7 @@
 .neon-form-wrap .wpcf7-form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 18px;
 }
 
 /* ---- Labels ---- */
@@ -108,7 +96,7 @@
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: #38bdf8;
-    margin-bottom: 8px;
+    margin-bottom: 7px;
 }
 
 .neon-form-wrap .wpcf7-form-control-wrap {
@@ -127,9 +115,9 @@
     background: rgba(14, 165, 233, 0.04);
     border: 1px solid rgba(14, 165, 233, 0.38);
     border-radius: 6px;
-    padding: 13px 16px;
+    padding: 12px 15px;
     font-family: 'Inter', sans-serif;
-    font-size: 0.93rem;
+    font-size: 0.92rem;
     color: #bae6fd;
     outline: none;
     transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
@@ -167,19 +155,18 @@
 .neon-form-wrap input[type="submit"],
 .neon-form-wrap .wpcf7-submit {
     width: 100%;
-    padding: 14px 24px;
+    padding: 13px 24px;
     background: transparent;
     border: 1px solid #0ea5e9;
     border-radius: 6px;
     font-family: 'Inter', sans-serif;
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     font-weight: 700;
     letter-spacing: 0.22em;
     text-transform: uppercase;
     color: #7dd3fc;
     cursor: pointer;
-    transition: background 0.25s, box-shadow 0.25s, color 0.25s;
-    box-shadow: 0 0 10px rgba(14, 165, 233, 0.2);
+    transition: background 0.25s, box-shadow 0.25s, color 0.25s, transform 0.1s;
     animation: btn-glow-idle 2.6s ease-in-out infinite alternate;
 }
 
@@ -189,7 +176,7 @@
     color: #e0f2fe;
     box-shadow:
         0 0 22px rgba(14, 165, 233, 0.55),
-        0 0 44px rgba(14, 165, 233, 0.28);
+        0 0 44px rgba(14, 165, 233, 0.25);
 }
 
 .neon-form-wrap input[type="submit"]:active,
@@ -197,24 +184,24 @@
     transform: scale(0.98);
 }
 
-/* ---- Spinner (CF7 loading state) ---- */
+/* ---- CF7 spinner ---- */
 .neon-form-wrap .wpcf7-spinner {
     display: none;
 }
 
-/* ---- Validation messages ---- */
+/* ---- Validation ---- */
 .neon-form-wrap .wpcf7-not-valid-tip {
     color: #f87171;
-    font-size: 0.76rem;
-    margin-top: 5px;
+    font-size: 0.75rem;
+    margin-top: 4px;
     display: block;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
 }
 
 .neon-form-wrap .wpcf7-response-output {
     border-radius: 6px;
-    padding: 12px 16px;
-    font-size: 0.83rem;
+    padding: 11px 15px;
+    font-size: 0.82rem;
     letter-spacing: 0.04em;
     margin-top: 0 !important;
     border: none !important;
@@ -232,7 +219,6 @@
     background: rgba(239, 68, 68, 0.09);
     border: 1px solid rgba(239, 68, 68, 0.38) !important;
     color: #fca5a5;
-    box-shadow: 0 0 14px rgba(239, 68, 68, 0.18);
 }
 
 .neon-form-wrap .wpcf7-validation-errors {
@@ -241,17 +227,16 @@
     color: #fde047;
 }
 
-/* ---- Plugin-not-active notice ---- */
+/* ---- Plugin notice ---- */
 .cs-plugin-notice {
     color: #7dd3fc;
     text-align: center;
-    letter-spacing: 0.08em;
     font-size: 0.9rem;
     opacity: 0.7;
     margin: 0;
 }
 
-/* ---- reCAPTCHA badge ---- */
+/* ---- reCAPTCHA ---- */
 .neon-form-wrap .g-recaptcha {
     margin: 4px 0;
 }
@@ -261,15 +246,15 @@
     from {
         text-shadow:
             0 0 10px rgba(125, 211, 252, 0.8),
-            0 0 30px rgba(14, 165, 233, 0.55),
-            0 0 60px rgba(14, 165, 233, 0.3);
+            0 0 28px rgba(14, 165, 233, 0.55),
+            0 0 55px rgba(14, 165, 233, 0.3);
     }
     to {
         text-shadow:
             0 0 16px rgba(125, 211, 252, 1),
-            0 0 44px rgba(14, 165, 233, 0.9),
-            0 0 90px rgba(14, 165, 233, 0.55),
-            0 0 130px rgba(14, 165, 233, 0.25);
+            0 0 40px rgba(14, 165, 233, 0.9),
+            0 0 80px rgba(14, 165, 233, 0.55),
+            0 0 120px rgba(14, 165, 233, 0.22);
     }
 }
 
@@ -280,31 +265,24 @@
 
 @keyframes btn-glow-idle {
     from { box-shadow: 0 0 8px rgba(14, 165, 233, 0.18); }
-    to   { box-shadow: 0 0 20px rgba(14, 165, 233, 0.48); }
+    to   { box-shadow: 0 0 20px rgba(14, 165, 233, 0.46); }
 }
 
 /* ---- Responsive ---- */
 @media (max-width: 600px) {
     .neon-form-wrap {
-        padding: 28px 18px;
+        padding: 26px 16px;
     }
 
-    #coming-soon-layer {
-        padding: 60px 16px 40px;
+    .uc-section {
+        margin-top: 32px;
     }
 
-    .cs-separator {
-        width: 140px;
+    .uc-separator {
+        width: 120px;
     }
 
-    .cs-logo #logo-canvas {
-        width: 100px;
-        height: 100px;
-    }
-}
-
-@media (max-width: 360px) {
-    .neon-form-wrap {
-        padding: 22px 14px;
+    #ui-layer {
+        padding: 60px 16px 48px;
     }
 }
