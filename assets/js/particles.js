@@ -14,7 +14,7 @@ let mouse = { x: -1000, y: -1000, radius: 80 };
 const PARTICLE_COUNT = 1500;
 const METEOR_COUNT   = 15;
 const COLORS  = ['#0ea5e9', '#7dd3fc', '#bae6fd', '#38bdf8'];
-const NEON    = ['#00d4ff', '#0ea5e9', '#38bdf8', '#7dd3fc', '#40e0ff'];
+const NEON    = ['#38bdf8', '#2fb8f5', '#38bdf8', '#1ab0f0', '#38bdf8'];
 const LOGO_SIZE = 300;
 
 const LOGO_SRC = (typeof deepstudioData !== 'undefined')
