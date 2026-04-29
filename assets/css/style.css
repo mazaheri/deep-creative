@@ -1,11 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
 
-body,
 html {
+    overflow-y: auto; /* page must scroll */
+}
+
+body {
     margin: 0;
     padding: 0;
     width: 100%;
-    min-height: 100%;
     background-color: #020617;
     font-family: 'Inter', sans-serif;
 }
@@ -16,7 +18,8 @@ html {
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none; /* let scroll & touch events reach the document */
+    z-index: 0;
+    pointer-events: none; /* let scroll & mouse events reach the document */
 }
 
 #ui-layer {
@@ -26,8 +29,8 @@ html {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 80px 20px 60px;
+    justify-content: flex-start; /* stack from top — no overflow hiding */
+    padding: 40px 20px 80px;
     box-sizing: border-box;
     pointer-events: none;
 }
