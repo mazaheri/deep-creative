@@ -1,37 +1,27 @@
 <?php
 /**
- * Front page — Particle animation + Under Construction + Contact Form 7
+ * Front page — Particle logo + Deep Creative Studio heading + Contact Form 7
  *
  * @package DeepStudio
  */
 
 get_header();
 
-$uc_title    = esc_html( get_theme_mod( 'deepstudio_cs_title',    'Under Construction Website'                             ) );
+$uc_title    = esc_html( get_theme_mod( 'deepstudio_cs_title',    'Deep Creative Studio'                                   ) );
 $uc_subtitle = esc_html( get_theme_mod( 'deepstudio_cs_subtitle', 'Please fill the form, we will contact you very soon.'  ) );
 $cf7_id      = absint(   get_theme_mod( 'deepstudio_cf7_id',      0                                                        ) );
 ?>
 
-<!-- Full-screen particle background (fixed) -->
 <div id="canvas-container">
 	<canvas id="particleCanvas"></canvas>
 </div>
 
-<!-- UI layer: logo particles → CREATIVE text → under construction → form -->
 <div id="ui-layer">
 
-	<!-- Logo particle canvas (original) -->
 	<div class="logo-container" id="logo-anchor">
 		<canvas id="logo-canvas"></canvas>
 	</div>
 
-	<!-- "CREATIVE" particle text canvas -->
-	<canvas id="text-canvas"></canvas>
-
-	<!-- "STUDIO" particle text canvas -->
-	<canvas id="studio-canvas"></canvas>
-
-	<!-- Under Construction section -->
 	<div class="uc-section">
 
 		<h1 class="uc-title"><?php echo $uc_title; ?></h1>
@@ -52,8 +42,8 @@ $cf7_id      = absint(   get_theme_mod( 'deepstudio_cf7_id',      0             
 			<?php endif; ?>
 		</div>
 
-	</div><!-- .uc-section -->
+	</div>
 
-</div><!-- #ui-layer -->
+</div>
 
 <?php get_footer(); ?>
