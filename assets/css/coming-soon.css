@@ -18,7 +18,7 @@
 .uc-title {
     font-family: 'Inter', sans-serif;
     font-weight: 700;
-    font-size: clamp(1rem, 8vw, 5rem);
+    font-size: clamp(0.5rem, 4vw, 2.5rem);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: #38bdf8;
