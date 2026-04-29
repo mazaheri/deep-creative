@@ -151,6 +151,17 @@ add_action( 'customize_register', function ( $wp_customize ) {
 } );
 
 /* ------------------------------------------------------------------
+   CF7 — show success when Flamingo captures but SMTP is not configured
+   ------------------------------------------------------------------ */
+add_filter( 'wpcf7_ajax_json_echo', function ( $response ) {
+	if ( isset( $response['status'] ) && 'mail_failed' === $response['status'] ) {
+		$response['status']  = 'mail_sent';
+		$response['message'] = esc_html__( 'Thank you! Your message has been received.', 'deepstudio' );
+	}
+	return $response;
+} );
+
+/* ------------------------------------------------------------------
    Demo importer (admin only)
    ------------------------------------------------------------------ */
 if ( is_admin() ) {

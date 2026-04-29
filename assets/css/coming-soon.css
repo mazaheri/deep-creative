@@ -184,30 +184,39 @@
 }
 
 .neon-form-wrap .wpcf7-response-output {
+    display: block !important;
     border-radius: 6px;
-    padding: 11px 15px;
-    font-size: 0.82rem;
-    margin-top: 0 !important;
-    border: none !important;
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.04em;
+    margin-top: 4px !important;
+    text-align: center;
 }
 
 .neon-form-wrap .wpcf7-mail-sent-ok {
-    background: rgba(34, 197, 94, 0.09);
-    border: 1px solid rgba(34, 197, 94, 0.38) !important;
-    color: #86efac;
+    display: block !important;
+    background: rgba(34, 197, 94, 0.15) !important;
+    border: 1px solid rgba(34, 197, 94, 0.55) !important;
+    color: #86efac !important;
+    box-shadow: 0 0 14px rgba(34, 197, 94, 0.2);
 }
 
 .neon-form-wrap .wpcf7-mail-sent-ng,
 .neon-form-wrap .wpcf7-spam-blocked {
-    background: rgba(239, 68, 68, 0.09);
-    border: 1px solid rgba(239, 68, 68, 0.38) !important;
-    color: #fca5a5;
+    display: block !important;
+    background: rgba(239, 68, 68, 0.15) !important;
+    border: 1px solid rgba(239, 68, 68, 0.55) !important;
+    color: #fca5a5 !important;
+    box-shadow: 0 0 14px rgba(239, 68, 68, 0.2);
 }
 
 .neon-form-wrap .wpcf7-validation-errors {
-    background: rgba(234, 179, 8, 0.09);
-    border: 1px solid rgba(234, 179, 8, 0.38) !important;
-    color: #fde047;
+    display: block !important;
+    background: rgba(234, 179, 8, 0.15) !important;
+    border: 1px solid rgba(234, 179, 8, 0.55) !important;
+    color: #fde047 !important;
+    box-shadow: 0 0 14px rgba(234, 179, 8, 0.2);
 }
 
 .cs-plugin-notice {
@@ -219,6 +228,48 @@
 }
 
 .neon-form-wrap .g-recaptcha { margin: 4px 0; }
+
+/* ---- Social links ---- */
+.social-links {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 28px;
+    pointer-events: auto;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    border-radius: 50%;
+    color: #38bdf8;
+    text-decoration: none;
+    transition: color 0.25s, border-color 0.25s, box-shadow 0.25s, background 0.25s;
+    box-shadow: 0 0 8px rgba(14, 165, 233, 0.18);
+    animation: btn-glow-idle 2.6s ease-in-out infinite alternate;
+}
+
+.social-link svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.social-link:hover {
+    color: #e0f2fe;
+    border-color: #0ea5e9;
+    background: rgba(14, 165, 233, 0.1);
+    box-shadow: 0 0 22px rgba(14, 165, 233, 0.55), 0 0 44px rgba(14, 165, 233, 0.25);
+}
 
 /* ---- Desktop: subtitle on one line, more top gap ---- */
 @media (min-width: 768px) {
