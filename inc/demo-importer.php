@@ -130,21 +130,8 @@ function deepstudio_import_configure_cf7() {
 		return;
 	}
 
-	// Reuse an existing form if one exists
-	$forms = get_posts( array(
-		'post_type'      => 'wpcf7_contact_form',
-		'posts_per_page' => 1,
-		'post_status'    => 'publish',
-		'orderby'        => 'ID',
-		'order'          => 'ASC',
-	) );
-
-	if ( ! empty( $forms ) ) {
-		set_theme_mod( 'deepstudio_cf7_id', absint( $forms[0]->ID ) );
-		return;
-	}
-
-	// No form found — create the DeepStudio Brief form from scratch
+	// CF7 [radio] tag parser chokes on $ and – characters, so we use
+	// plain HTML radio buttons and sync the selection to a hidden CF7 field.
 	$form_template = '<div class="cf7-section">
 <p class="cf7-section-title"><span class="cf7-num">1</span> Brief</p>
 <p class="cf7-hint">Tell us about your project (AI / CGI / campaign)<br />Include your idea, goal, or any references</p>
@@ -155,7 +142,13 @@ function deepstudio_import_configure_cf7() {
 
 <div class="cf7-section">
 <p class="cf7-section-title"><span class="cf7-num">2</span> Budget Range</p>
-[radio* budget use_label_element "$3,000 – $5,000" "$5,000 – $10,000" "$10,000 – $15,000" "$15,000+"]
+<div class="ds-budget-grid">
+<label class="ds-budget-item"><input type="radio" name="ds_budget" value="$3,000 – $5,000"><span class="ds-budget-label">$3,000 – $5,000</span></label>
+<label class="ds-budget-item"><input type="radio" name="ds_budget" value="$5,000 – $10,000"><span class="ds-budget-label">$5,000 – $10,000</span></label>
+<label class="ds-budget-item"><input type="radio" name="ds_budget" value="$10,000 – $15,000"><span class="ds-budget-label">$10,000 – $15,000</span></label>
+<label class="ds-budget-item"><input type="radio" name="ds_budget" value="$15,000+"><span class="ds-budget-label">$15,000+</span></label>
+</div>
+[hidden budget ""]
 </div>
 
 <div class="cf7-divider"></div>
@@ -169,6 +162,22 @@ function deepstudio_import_configure_cf7() {
 </div>
 
 [submit "Submit Brief"]';
+
+	// Find existing form — update its content rather than creating a duplicate
+	$forms = get_posts( array(
+		'post_type'      => 'wpcf7_contact_form',
+		'posts_per_page' => 1,
+		'post_status'    => 'publish',
+		'orderby'        => 'ID',
+		'order'          => 'ASC',
+	) );
+
+	if ( ! empty( $forms ) ) {
+		$form_id = absint( $forms[0]->ID );
+		update_post_meta( $form_id, '_form', $form_template );
+		set_theme_mod( 'deepstudio_cf7_id', $form_id );
+		return;
+	}
 
 	$form_id = wp_insert_post( array(
 		'post_title'  => 'DeepStudio Brief',

@@ -41,7 +41,22 @@
         });
     }
 
-    document.addEventListener('DOMContentLoaded', fixRadioPointerEvents);
+    function syncBudget() {
+        var radios = document.querySelectorAll('.ds-budget-grid input[type="radio"]');
+        var hidden = document.querySelector('.neon-form-wrap input[name="budget"]');
+        if (!radios.length) return;
+        radios.forEach(function (radio) {
+            radio.addEventListener('change', function () {
+                if (hidden) hidden.value = this.value;
+            });
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        fixRadioPointerEvents();
+        syncBudget();
+    });
+
     document.addEventListener('wpcf7mailsent', function () {
         var wrap = document.querySelector('.neon-form-wrap');
         if (!wrap) return;
