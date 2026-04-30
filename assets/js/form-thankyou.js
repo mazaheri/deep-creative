@@ -21,6 +21,27 @@
         + ' stroke-linecap="round" stroke-linejoin="round" width="28" height="28">'
         + '<polyline points="20 6 9 17 4 12"/></svg>';
 
+    function fixRadioPointerEvents() {
+        var selectors = [
+            '.neon-form-wrap',
+            '.neon-form-wrap .wpcf7',
+            '.neon-form-wrap .wpcf7-form',
+            '.neon-form-wrap .wpcf7-radio',
+            '.neon-form-wrap .wpcf7-list-item',
+            '.neon-form-wrap .wpcf7-list-item label',
+            '.neon-form-wrap .wpcf7-list-item input[type="radio"]',
+            '.neon-form-wrap input',
+            '.neon-form-wrap textarea',
+            '.neon-form-wrap .wpcf7-submit'
+        ];
+        selectors.forEach(function (sel) {
+            document.querySelectorAll(sel).forEach(function (el) {
+                el.style.pointerEvents = 'auto';
+            });
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', fixRadioPointerEvents);
     document.addEventListener('wpcf7mailsent', function () {
         var wrap = document.querySelector('.neon-form-wrap');
         if (!wrap) return;
