@@ -58,6 +58,9 @@
     });
 
     document.addEventListener('wpcf7mailsent', function () {
+        var subtitle = document.querySelector('.uc-subtitle');
+        if (subtitle) subtitle.style.display = 'none';
+
         var wrap = document.querySelector('.neon-form-wrap');
         if (!wrap) return;
         wrap.innerHTML =

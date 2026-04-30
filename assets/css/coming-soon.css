@@ -145,8 +145,8 @@
 .ds-budget-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 11px 14px;
+    gap: 12px;
+    padding: 11px 20px;
     border: 1px solid rgba(14, 165, 233, 0.28);
     border-radius: 6px;
     cursor: pointer;

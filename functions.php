@@ -160,6 +160,14 @@ add_action( 'customize_register', function ( $wp_customize ) {
 } );
 
 /* ------------------------------------------------------------------
+   CF7 — always send results to the studio inbox
+   ------------------------------------------------------------------ */
+add_filter( 'wpcf7_mail_components', function ( $components ) {
+	$components['recipient'] = 'iman@deepcreative.studio';
+	return $components;
+} );
+
+/* ------------------------------------------------------------------
    CF7 — show success when Flamingo captures but SMTP is not configured
    ------------------------------------------------------------------ */
 add_filter( 'wpcf7_ajax_json_echo', function ( $response ) {
