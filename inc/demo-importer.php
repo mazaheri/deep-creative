@@ -48,7 +48,7 @@ function deepstudio_demo_importer_page() {
 			<ul style="list-style:disc;margin-left:20px;line-height:2">
 				<li><?php esc_html_e( 'Create a "Coming Soon" page (if it doesn\'t exist)', 'deepstudio' ); ?></li>
 				<li><?php esc_html_e( 'Set that page as the static front page', 'deepstudio' ); ?></li>
-				<li><?php esc_html_e( 'Detect Contact Form 7 and save the first available form ID to the Customizer', 'deepstudio' ); ?></li>
+				<li><?php esc_html_e( 'Create the DeepStudio Brief contact form in CF7 (or use existing)', 'deepstudio' ); ?></li>
 			</ul>
 
 			<p style="margin-top:16px;">
@@ -123,14 +123,14 @@ function deepstudio_import_coming_soon_page() {
 }
 
 /* ------------------------------------------------------------------
-   Detect first CF7 form and save ID to Customizer
+   Create or detect CF7 form and save ID to Customizer
    ------------------------------------------------------------------ */
 function deepstudio_import_configure_cf7() {
 	if ( ! class_exists( 'WPCF7' ) ) {
 		return;
 	}
 
-	// Find the first published CF7 form
+	// Reuse an existing form if one exists
 	$forms = get_posts( array(
 		'post_type'      => 'wpcf7_contact_form',
 		'posts_per_page' => 1,
@@ -139,10 +139,62 @@ function deepstudio_import_configure_cf7() {
 		'order'          => 'ASC',
 	) );
 
-	if ( empty( $forms ) ) {
+	if ( ! empty( $forms ) ) {
+		set_theme_mod( 'deepstudio_cf7_id', absint( $forms[0]->ID ) );
 		return;
 	}
 
-	// Save the form ID so the Customizer / front-page.php picks it up
-	set_theme_mod( 'deepstudio_cf7_id', absint( $forms[0]->ID ) );
+	// No form found — create the DeepStudio Brief form from scratch
+	$form_template = '<div class="cf7-section">
+<p class="cf7-section-title"><span class="cf7-num">1</span> Brief</p>
+<p class="cf7-hint">Tell us about your project (AI / CGI / campaign)<br />Include your idea, goal, or any references</p>
+[textarea* project-brief placeholder "Describe your project..."]
+</div>
+
+<div class="cf7-divider"></div>
+
+<div class="cf7-section">
+<p class="cf7-section-title"><span class="cf7-num">2</span> Budget Range</p>
+[radio* budget use_label_element "$3,000 – $5,000" "$5,000 – $10,000" "$10,000 – $15,000" "$15,000+"]
+</div>
+
+<div class="cf7-divider"></div>
+
+<div class="cf7-section">
+<p class="cf7-section-title"><span class="cf7-num">3</span> Contact Info</p>
+[text* your-name placeholder "Name"]
+[email* your-email placeholder "Email"]
+[text* your-phone placeholder "Phone"]
+[text your-company placeholder "Company Name (optional)"]
+</div>
+
+[submit "Submit Brief"]';
+
+	$form_id = wp_insert_post( array(
+		'post_title'  => 'DeepStudio Brief',
+		'post_type'   => 'wpcf7_contact_form',
+		'post_status' => 'publish',
+		'post_author' => get_current_user_id(),
+	) );
+
+	if ( is_wp_error( $form_id ) || ! $form_id ) {
+		return;
+	}
+
+	update_post_meta( $form_id, '_form', $form_template );
+	update_post_meta( $form_id, '_locale', get_locale() );
+
+	$host = parse_url( home_url(), PHP_URL_HOST );
+	update_post_meta( $form_id, '_mail', array(
+		'active'        => true,
+		'recipient'     => get_option( 'admin_email' ),
+		'sender'        => get_bloginfo( 'name' ) . ' <wordpress@' . $host . '>',
+		'subject'       => 'New Brief — [your-name]',
+		'body'          => "Brief:\n[project-brief]\n\nBudget: [budget]\n\nName: [your-name]\nEmail: [your-email]\nPhone: [your-phone]\nCompany: [your-company]",
+		'attachments'   => '',
+		'use_html'      => false,
+		'exclude_blank' => false,
+	) );
+
+	set_theme_mod( 'deepstudio_cf7_id', $form_id );
 }
