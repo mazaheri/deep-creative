@@ -82,6 +82,15 @@ function deepstudio_enqueue_assets() {
 	wp_localize_script( 'deepstudio-particles', 'deepstudioData', array(
 		'logoSrc' => esc_url( get_template_directory_uri() . '/assets/images/deep-logo.png' ),
 	) );
+
+	// Thank-you screen + WhatsApp button after CF7 submission
+	wp_enqueue_script(
+		'deepstudio-form-thankyou',
+		get_template_directory_uri() . '/assets/js/form-thankyou.js',
+		array( 'deepstudio-particles' ),
+		DEEPSTUDIO_VERSION,
+		true
+	);
 }
 add_action( 'wp_enqueue_scripts', 'deepstudio_enqueue_assets' );
 
