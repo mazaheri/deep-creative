@@ -61,6 +61,9 @@
         var subtitle = document.querySelector('.uc-subtitle');
         if (subtitle) subtitle.style.display = 'none';
 
+        var waBelow = document.querySelector('.ds-wa-below-form');
+        if (waBelow) waBelow.style.display = 'none';
+
         var wrap = document.querySelector('.neon-form-wrap');
         if (!wrap) return;
         wrap.innerHTML =
