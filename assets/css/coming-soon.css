@@ -137,12 +137,14 @@
     flex-direction: column;
     gap: 8px;
     width: 100%;
+    pointer-events: auto;
 }
 
 .neon-form-wrap .wpcf7-radio .wpcf7-list-item {
     display: block;
     margin: 0;
     width: 100%;
+    pointer-events: auto;
 }
 
 .neon-form-wrap .wpcf7-radio .wpcf7-list-item label {
@@ -163,6 +165,7 @@
     box-sizing: border-box;
     transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
     background: rgba(14, 165, 233, 0.03);
+    pointer-events: auto;
 }
 
 .neon-form-wrap .wpcf7-radio .wpcf7-list-item label:hover {
@@ -182,6 +185,7 @@
     cursor: pointer;
     transition: border-color 0.2s, box-shadow 0.2s;
     padding: 0;
+    pointer-events: auto;
 }
 
 .neon-form-wrap .wpcf7-radio input[type="radio"]:checked {
@@ -228,11 +232,11 @@
     padding: 12px 15px;
     font-family: 'Inter', sans-serif;
     font-size: 0.92rem;
-    color: #bae6fd;
+    color: #38bdf8;
     outline: none;
     transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
     box-sizing: border-box;
-    caret-color: #7dd3fc;
+    caret-color: #38bdf8;
     -webkit-appearance: none;
 }
 
@@ -240,7 +244,7 @@
 .neon-form-wrap input[type="email"]::placeholder,
 .neon-form-wrap input[type="tel"]::placeholder,
 .neon-form-wrap textarea::placeholder {
-    color: rgba(125, 211, 252, 0.3);
+    color: rgba(56, 189, 248, 0.38);
 }
 
 .neon-form-wrap input[type="text"]:focus,
