@@ -305,6 +305,10 @@ h1 {
   flex-direction: column;
   justify-content: space-between;
   pointer-events: none;
+  background:
+  radial-gradient(circle at 65% 20%, rgba(25,230,255,.12), transparent 35%),
+  linear-gradient(180deg, rgba(1,5,10,.60) 0%, rgba(1,5,10,.04) 32%, rgba(1,5,10,.12) 58%, rgba(1,5,10,.82) 100%);
+
 }
 
 .reel-top {
