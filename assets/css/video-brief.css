@@ -161,18 +161,22 @@ header {
   box-shadow: 0 0 58px rgba(25,230,255,.26);
 }
 
-/* ---- Hero: text + video side by side, form full-width below ---- */
+/* ---- Hero: text + video side by side, form constrained below ---- */
 .hero {
   min-height: calc(100vh - 88px);
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 390px;
-  gap: 30px;
+  grid-template-columns: minmax(0, 560px) 380px;
+  gap: 40px;
   align-items: start;
+  justify-content: center;
   padding: 22px 0 70px;
 }
 
 .brief-card {
   grid-column: 1 / -1;
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 /* ---- Copy ---- */
