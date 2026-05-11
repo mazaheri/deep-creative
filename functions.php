@@ -248,21 +248,17 @@ function deepstudio_maybe_create_brief_form() {
 		return;
 	}
 
-	$saved_id = absint( get_theme_mod( 'deepstudio_vb_cf7_id', 0 ) );
-	if ( $saved_id && get_post( $saved_id ) ) {
-		return; // already created
-	}
+	$tpl_version = 2; // bump when the template changes
 
 	$form_tpl = <<<'CF7'
-<div class="brief-grid">
 <div class="field">
 <label>Name <span class="req">*</span>
 [text* your-name placeholder "Your name"]</label>
 </div>
+
 <div class="field">
 <label>Company <span class="req">*</span>
 [text* your-company placeholder "Company name"]</label>
-</div>
 </div>
 
 <div class="field">
@@ -275,15 +271,14 @@ function deepstudio_maybe_create_brief_form() {
 [tel* your-phone placeholder "50 123 4567"]</label>
 </div>
 
-<div class="brief-grid">
 <div class="field">
 <label>Service <span class="req">*</span>
 [select* your-service include_blank "AI Commercial Production" "CGI / FOOH Activation" "Premium Video Production" "Hybrid AI + CGI + VFX" "Not sure yet"]</label>
 </div>
+
 <div class="field">
 <label>Budget <span class="req">*</span>
 [select* your-budget include_blank "$3,000 - $5,000" "$5,000 - $10,000" "$10,000 - $15,000" "$15,000+" "Not confirmed yet"]</label>
-</div>
 </div>
 
 <div class="field">
@@ -298,6 +293,20 @@ function deepstudio_maybe_create_brief_form() {
 <p class="form-note">For faster response, you can also send references or a short voice note through WhatsApp.</p>
 CF7;
 
+	$saved_id = absint( get_theme_mod( 'deepstudio_vb_cf7_id', 0 ) );
+
+	if ( $saved_id && get_post( $saved_id ) ) {
+		// Form exists — update template only if version changed
+		if ( absint( get_post_meta( $saved_id, '_deepstudio_tpl_ver', true ) ) >= $tpl_version ) {
+			return;
+		}
+		wp_update_post( array( 'ID' => $saved_id, 'post_content' => $form_tpl ) );
+		update_post_meta( $saved_id, '_form', $form_tpl );
+		update_post_meta( $saved_id, '_deepstudio_tpl_ver', $tpl_version );
+		return;
+	}
+
+	// Create new form
 	$post_id = wp_insert_post( array(
 		'post_title'   => 'Video Brief',
 		'post_type'    => 'wpcf7_contact_form',
@@ -310,6 +319,7 @@ CF7;
 	}
 
 	update_post_meta( $post_id, '_form', $form_tpl );
+	update_post_meta( $post_id, '_deepstudio_tpl_ver', $tpl_version );
 	update_post_meta( $post_id, '_mail', array(
 		'active'             => true,
 		'subject'            => 'New Brief: [your-name] — [your-company]',
