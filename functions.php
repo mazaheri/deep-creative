@@ -80,9 +80,6 @@ function deepstudio_enqueue_assets() {
 			true
 		);
 
-		wp_localize_script( 'deepstudio-video-brief-form', 'briefData', array(
-			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-		) );
 
 		wp_enqueue_script(
 			'deepstudio-flicker',
@@ -241,54 +238,91 @@ add_filter( 'wpcf7_ajax_json_echo', function ( $response ) {
 } );
 
 /* ------------------------------------------------------------------
-   Video Brief — AJAX form handler
+   CF7 — auto-create the Video Brief form on first load
+   Runs at priority 20 so CF7 post types are already registered.
    ------------------------------------------------------------------ */
-add_action( 'wp_ajax_brief_submit',        'deepstudio_brief_submit' );
-add_action( 'wp_ajax_nopriv_brief_submit', 'deepstudio_brief_submit' );
+add_action( 'init', 'deepstudio_maybe_create_brief_form', 20 );
 
-function deepstudio_brief_submit() {
-	check_ajax_referer( 'brief_submit', 'brief_nonce' );
-
-	$name      = sanitize_text_field( wp_unslash( $_POST['bf_name']           ?? '' ) );
-	$company   = sanitize_text_field( wp_unslash( $_POST['bf_company']        ?? '' ) );
-	$email     = sanitize_email(      wp_unslash( $_POST['bf_email']          ?? '' ) );
-	$phone     = sanitize_text_field( wp_unslash( $_POST['bf_phone']          ?? '' ) );
-	$cc        = sanitize_text_field( wp_unslash( $_POST['bf_phone_cc']       ?? '+971' ) );
-	$cc_custom = sanitize_text_field( wp_unslash( $_POST['bf_phone_cc_custom']?? '' ) );
-	$service   = sanitize_text_field( wp_unslash( $_POST['bf_service']        ?? '' ) );
-	$budget    = sanitize_text_field( wp_unslash( $_POST['bf_budget']         ?? '' ) );
-	$project   = sanitize_textarea_field( wp_unslash( $_POST['bf_project']    ?? '' ) );
-
-	if ( ! $name || ! $email || ! $phone || ! $service || ! $budget ) {
-		wp_send_json_error( array( 'message' => 'Please fill in all required fields.' ) );
+function deepstudio_maybe_create_brief_form() {
+	if ( ! class_exists( 'WPCF7_ContactForm' ) ) {
+		return;
 	}
 
-	$code  = ( $cc === 'other' ? $cc_custom : $cc );
-	$code  = preg_replace( '/(?!^\+)\D/', '', $code );
-	if ( $phone && strpos( $phone, '+' ) !== 0 ) {
-		$phone = $code . ltrim( $phone, '0' );
+	$saved_id = absint( get_theme_mod( 'deepstudio_vb_cf7_id', 0 ) );
+	if ( $saved_id && get_post( $saved_id ) ) {
+		return; // already created
 	}
 
-	$to      = 'iman@deepcreative.studio';
-	$subject = sprintf( 'New Brief: %s — %s', $name, $company ?: 'no company' );
-	$body    = implode( "\n", array(
-		"Name:    {$name}",
-		"Company: {$company}",
-		"Email:   {$email}",
-		"Phone:   {$phone}",
-		"Service: {$service}",
-		"Budget:  {$budget}",
-		'',
-		'Project Idea:',
-		$project ?: '(not provided)',
+	$form_tpl = <<<'CF7'
+<div class="brief-grid">
+<div class="field">
+<label>Name <span class="req">*</span>
+[text* your-name placeholder "Your name"]</label>
+</div>
+<div class="field">
+<label>Company <span class="req">*</span>
+[text* your-company placeholder "Company name"]</label>
+</div>
+</div>
+
+<div class="field">
+<label>Email <span class="req">*</span>
+[email* your-email placeholder "name@company.com"]</label>
+</div>
+
+<div class="field">
+<label>Contact Number <span class="req">*</span>
+[tel* your-phone placeholder "50 123 4567"]</label>
+</div>
+
+<div class="brief-grid">
+<div class="field">
+<label>Service <span class="req">*</span>
+[select* your-service include_blank "AI Commercial Production" "CGI / FOOH Activation" "Premium Video Production" "Hybrid AI + CGI + VFX" "Not sure yet"]</label>
+</div>
+<div class="field">
+<label>Budget <span class="req">*</span>
+[select* your-budget include_blank "$3,000 - $5,000" "$5,000 - $10,000" "$10,000 - $15,000" "$15,000+" "Not confirmed yet"]</label>
+</div>
+</div>
+
+<div class="field">
+<label>Project Idea <span class="opt">&#8212; optional</span>
+[textarea your-project placeholder "Describe the campaign, product, launch, reference, location, or visual idea..."]</label>
+</div>
+
+<div class="submit-row">
+[submit "Submit Brief"]
+</div>
+
+<p class="form-note">For faster response, you can also send references or a short voice note through WhatsApp.</p>
+CF7;
+
+	$post_id = wp_insert_post( array(
+		'post_title'   => 'Video Brief',
+		'post_type'    => 'wpcf7_contact_form',
+		'post_status'  => 'publish',
+		'post_content' => $form_tpl,
 	) );
-	$headers = array(
-		'Content-Type: text/plain; charset=UTF-8',
-		"Reply-To: {$name} <{$email}>",
-	);
 
-	wp_mail( $to, $subject, $body, $headers );
-	wp_send_json_success( array( 'message' => 'Brief received!' ) );
+	if ( ! $post_id || is_wp_error( $post_id ) ) {
+		return;
+	}
+
+	update_post_meta( $post_id, '_form', $form_tpl );
+	update_post_meta( $post_id, '_mail', array(
+		'active'             => true,
+		'subject'            => 'New Brief: [your-name] — [your-company]',
+		'sender'             => get_bloginfo( 'name' ) . ' <' . get_bloginfo( 'admin_email' ) . '>',
+		'body'               => "Name: [your-name]\nCompany: [your-company]\nEmail: [your-email]\nPhone: [your-phone]\nService: [your-service]\nBudget: [your-budget]\n\nProject Idea:\n[your-project]",
+		'recipient'          => 'iman@deepcreative.studio',
+		'additional_headers' => 'Reply-To: [your-email]',
+		'attachments'        => '',
+		'use_html'           => false,
+		'exclude_blank'      => false,
+	) );
+
+	set_theme_mod( 'deepstudio_vb_cf7_id', $post_id );
 }
 
 /* ------------------------------------------------------------------
