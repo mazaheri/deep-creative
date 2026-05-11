@@ -49,14 +49,12 @@ $form_id   = $cf7_id ? $cf7_id : 1;
         Deep Creative Studio creates high-end AI, CGI, VFX and hybrid video campaigns for brands, agencies and government-level projects that need standout visual execution.
       </p>
 
-      
-
-      <div class="pills">
-        <span class="pill">AI Commercials</span>
-        <span class="pill">CGI / FOOH Activations</span>
-        <span class="pill">Premium Video Production</span>
-        <span class="pill">Dubai Based Studio</span>
+      <div class="hero-actions">
+        <a class="button primary" href="#brief">Submit Your Brief</a>
+        <a class="button" href="#showreel">View Showreel</a>
       </div>
+
+      
     </section>
 
     <!-- ── Phone-frame showreel ── -->
@@ -75,7 +73,7 @@ $form_id   = $cf7_id ? $cf7_id : 1;
             </div>
 
             <div class="reel-bottom">
-              <h2>Our Viral Videos</h2>
+              <h2>Selected Works</h2>
             </div>
           </div>
         </div>
