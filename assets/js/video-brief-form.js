@@ -96,6 +96,22 @@
 
     document.addEventListener('DOMContentLoaded', initPhoneField);
 
+    /* ── Hide fixed WhatsApp button while form is on screen (mobile) ── */
+    function initWhatsappHide() {
+        var wa   = document.querySelector('.button.whatsapp');
+        var card = document.querySelector('.brief-card');
+        if (!wa || !card || !window.IntersectionObserver) return;
+
+        var observer = new IntersectionObserver(function (entries) {
+            if (window.innerWidth > 700) return;
+            wa.classList.toggle('wa-hidden', entries[0].isIntersecting);
+        }, { threshold: 0.1 });
+
+        observer.observe(card);
+    }
+
+    document.addEventListener('DOMContentLoaded', initWhatsappHide);
+
     /* ── Thank-you screen after CF7 sends mail ── */
     document.addEventListener('wpcf7mailsent', function () {
         var card = document.querySelector('.brief-card');

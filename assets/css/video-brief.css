@@ -703,6 +703,16 @@ h1 {
 
 /* ---- Fixed WhatsApp ---- */
 .button.whatsapp {
+  transition: opacity .25s ease, visibility .25s ease;
+}
+
+.button.whatsapp.wa-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.button.whatsapp {
   position: fixed;
   right: 22px;
   bottom: 22px;
