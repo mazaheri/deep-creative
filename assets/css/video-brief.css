@@ -161,14 +161,18 @@ header {
   box-shadow: 0 0 58px rgba(25,230,255,.26);
 }
 
-/* ---- Hero 3-column grid ---- */
+/* ---- Hero: text + video side by side, form full-width below ---- */
 .hero {
   min-height: calc(100vh - 88px);
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 350px 430px;
+  grid-template-columns: minmax(0, 1fr) 390px;
   gap: 30px;
-  align-items: center;
+  align-items: start;
   padding: 22px 0 70px;
+}
+
+.brief-card {
+  grid-column: 1 / -1;
 }
 
 /* ---- Copy ---- */
@@ -691,19 +695,6 @@ h1 {
 }
 
 /* ---- Responsive ---- */
-@media (max-width: 1190px) {
-  .hero {
-    grid-template-columns: 1fr 360px;
-  }
-
-  .brief-card {
-    grid-column: 1 / -1;
-    max-width: 820px;
-    width: 100%;
-    margin: 0 auto;
-  }
-}
-
 @media (max-width: 920px) {
 
   .hero {
@@ -713,8 +704,6 @@ h1 {
   }
 
   .copy { padding-bottom: 0; }
-  .vertical-wrap { order: 2; }
-  .brief-card { order: 3; }
   .reel-frame { width: min(100%, 350px); }
   .services { grid-template-columns: repeat(2, 1fr); }
 }
