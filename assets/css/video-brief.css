@@ -620,6 +620,12 @@ h1 {
   line-height: 1.45;
 }
 
+/* Email and Contact Number: each on its own full-width line */
+.brief-card .brief-grid:has(input[type="email"]) {
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
 /* ---- Phone field: country code + number ---- */
 .phone-field-wrap {
   display: flex;
