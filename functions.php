@@ -80,6 +80,10 @@ function deepstudio_enqueue_assets() {
 			true
 		);
 
+		wp_localize_script( 'deepstudio-video-brief-form', 'briefData', array(
+			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+		) );
+
 		wp_enqueue_script(
 			'deepstudio-flicker',
 			get_template_directory_uri() . '/assets/js/flicker.js',
@@ -235,6 +239,57 @@ add_filter( 'wpcf7_ajax_json_echo', function ( $response ) {
 	}
 	return $response;
 } );
+
+/* ------------------------------------------------------------------
+   Video Brief — AJAX form handler
+   ------------------------------------------------------------------ */
+add_action( 'wp_ajax_brief_submit',        'deepstudio_brief_submit' );
+add_action( 'wp_ajax_nopriv_brief_submit', 'deepstudio_brief_submit' );
+
+function deepstudio_brief_submit() {
+	check_ajax_referer( 'brief_submit', 'brief_nonce' );
+
+	$name      = sanitize_text_field( wp_unslash( $_POST['bf_name']           ?? '' ) );
+	$company   = sanitize_text_field( wp_unslash( $_POST['bf_company']        ?? '' ) );
+	$email     = sanitize_email(      wp_unslash( $_POST['bf_email']          ?? '' ) );
+	$phone     = sanitize_text_field( wp_unslash( $_POST['bf_phone']          ?? '' ) );
+	$cc        = sanitize_text_field( wp_unslash( $_POST['bf_phone_cc']       ?? '+971' ) );
+	$cc_custom = sanitize_text_field( wp_unslash( $_POST['bf_phone_cc_custom']?? '' ) );
+	$service   = sanitize_text_field( wp_unslash( $_POST['bf_service']        ?? '' ) );
+	$budget    = sanitize_text_field( wp_unslash( $_POST['bf_budget']         ?? '' ) );
+	$project   = sanitize_textarea_field( wp_unslash( $_POST['bf_project']    ?? '' ) );
+
+	if ( ! $name || ! $email || ! $phone || ! $service || ! $budget ) {
+		wp_send_json_error( array( 'message' => 'Please fill in all required fields.' ) );
+	}
+
+	$code  = ( $cc === 'other' ? $cc_custom : $cc );
+	$code  = preg_replace( '/(?!^\+)\D/', '', $code );
+	if ( $phone && strpos( $phone, '+' ) !== 0 ) {
+		$phone = $code . ltrim( $phone, '0' );
+	}
+
+	$to      = 'iman@deepcreative.studio';
+	$subject = sprintf( 'New Brief: %s — %s', $name, $company ?: 'no company' );
+	$body    = implode( "\n", array(
+		"Name:    {$name}",
+		"Company: {$company}",
+		"Email:   {$email}",
+		"Phone:   {$phone}",
+		"Service: {$service}",
+		"Budget:  {$budget}",
+		'',
+		'Project Idea:',
+		$project ?: '(not provided)',
+	) );
+	$headers = array(
+		'Content-Type: text/plain; charset=UTF-8',
+		"Reply-To: {$name} <{$email}>",
+	);
+
+	wp_mail( $to, $subject, $body, $headers );
+	wp_send_json_success( array( 'message' => 'Brief received!' ) );
+}
 
 /* ------------------------------------------------------------------
    Demo importer (admin only)

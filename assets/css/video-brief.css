@@ -481,11 +481,32 @@ h1 {
   color: var(--text);
 }
 
+/* ---- Label markers ---- */
+.brief-card label .req {
+  color: rgba(124,247,255,.55);
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.brief-card label .opt {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* ---- Brief grid bottom spacing ---- */
+.brief-card .brief-grid { margin-bottom: 0; }
+
 /* ---- Submit button ---- */
 .brief-card .submit-row { margin-top: 20px; }
 
 .brief-card input[type="submit"],
-.brief-card .wpcf7-submit {
+.brief-card .wpcf7-submit,
+.brief-card button.brief-submit {
   width: 100%;
   min-height: 56px;
   padding: 0 20px;
@@ -506,7 +527,8 @@ h1 {
 }
 
 .brief-card input[type="submit"]:hover,
-.brief-card .wpcf7-submit:hover {
+.brief-card .wpcf7-submit:hover,
+.brief-card button.brief-submit:hover {
   transform: translateY(-2px);
   box-shadow: 0 0 80px rgba(25,230,255,.40);
 }
@@ -625,12 +647,6 @@ h1 {
   color: var(--muted);
   font-size: 13px;
   line-height: 1.45;
-}
-
-/* Email and Contact Number: each on its own full-width line */
-.brief-card .brief-grid:has(input[type="email"]) {
-  grid-template-columns: 1fr;
-  gap: 16px;
 }
 
 /* ---- Phone field: country code + number ---- */
