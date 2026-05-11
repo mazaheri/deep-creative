@@ -194,7 +194,7 @@ add_action( 'customize_register', function ( $wp_customize ) {
 
 	// Showreel video URL
 	$wp_customize->add_setting( 'deepstudio_vb_video_url', array(
-		'default'           => 'http://deepcreative.studio/wp-content/uploads/videos/Hero%20Video%20Loop%20lQ.mp4',
+		'default'           => 'https://deepcreative.studio/wp-content/uploads/videos/Hero%20Video%20Loop%20lQ.mp4',
 		'sanitize_callback' => 'esc_url_raw',
 	) );
 	$wp_customize->add_control( 'deepstudio_vb_video_url', array(

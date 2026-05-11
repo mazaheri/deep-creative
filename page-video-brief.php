@@ -12,7 +12,7 @@
 get_header();
 
 $cf7_id    = absint( get_theme_mod( 'deepstudio_vb_cf7_id',    0 ) );
-$video_url = esc_url( get_theme_mod( 'deepstudio_vb_video_url', 'http://deepcreative.studio/wp-content/uploads/videos/Hero%20Video%20Loop%20lQ.mp4' ) );
+$video_url = esc_url( get_theme_mod( 'deepstudio_vb_video_url', 'https://deepcreative.studio/wp-content/uploads/videos/Hero%20Video%20Loop%20lQ.mp4' ) );
 $form_id   = $cf7_id ? $cf7_id : 1;
 ?>
 
