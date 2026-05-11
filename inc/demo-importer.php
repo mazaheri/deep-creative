@@ -2,8 +2,9 @@
 /**
  * DeepStudio Demo Importer
  *
- * Creates the Coming Soon page, sets it as the static front page,
- * and wires up Contact Form 7 if active.
+ * Each import action deletes any existing page of that name and recreates it
+ * fresh from the current template. The CF7 form is updated in place (not
+ * deleted) so that submission history stored in Flamingo is preserved.
  *
  * Access via: Appearance → Import Demo
  *
@@ -28,44 +29,104 @@ add_action( 'admin_menu', function () {
 } );
 
 /* ------------------------------------------------------------------
+   Helper — build a nonce-secured import URL
+   ------------------------------------------------------------------ */
+function deepstudio_import_url( $action ) {
+	return wp_nonce_url(
+		admin_url( 'themes.php?page=deepstudio-demo-importer&action=' . $action ),
+		'deepstudio_import'
+	);
+}
+
+/* ------------------------------------------------------------------
+   Helper — force-delete every page (any status) with a given title
+   ------------------------------------------------------------------ */
+function deepstudio_purge_pages( $title ) {
+	$posts = get_posts( array(
+		'post_type'      => 'page',
+		'post_status'    => array( 'publish', 'draft', 'trash', 'private', 'pending', 'future' ),
+		'posts_per_page' => -1,
+		'no_found_rows'  => true,
+	) );
+
+	foreach ( $posts as $post ) {
+		if ( $post->post_title === $title ) {
+			wp_delete_post( $post->ID, true );
+		}
+	}
+}
+
+/* ------------------------------------------------------------------
    Admin page output
    ------------------------------------------------------------------ */
 function deepstudio_demo_importer_page() {
-	$imported = isset( $_GET['imported'] ) && $_GET['imported'] === '1';
+	$imported    = isset( $_GET['imported'] ) ? sanitize_key( $_GET['imported'] ) : '';
+	$confirm_cs  = esc_js( __( 'This will delete and recreate the Coming Soon page. Continue?', 'deepstudio' ) );
+	$confirm_vb  = esc_js( __( 'This will delete and recreate the Video Brief page. Continue?', 'deepstudio' ) );
 	?>
 	<div class="wrap">
 		<h1><?php esc_html_e( 'DeepStudio — Import Demo', 'deepstudio' ); ?></h1>
 
-		<?php if ( $imported ) : ?>
+		<?php if ( $imported === '1' ) : ?>
 			<div class="notice notice-success is-dismissible">
-				<p><?php esc_html_e( 'Demo imported successfully! Your Coming Soon page is now live.', 'deepstudio' ); ?></p>
+				<p><?php esc_html_e( 'Coming Soon page re-imported successfully and set as the front page.', 'deepstudio' ); ?></p>
+			</div>
+		<?php elseif ( $imported === '2' ) : ?>
+			<div class="notice notice-success is-dismissible">
+				<p><?php esc_html_e( 'Video Brief page re-imported. Set your video URL at Appearance → Customize → Video Brief.', 'deepstudio' ); ?></p>
 			</div>
 		<?php endif; ?>
 
-		<div class="card" style="max-width:700px;margin-top:20px;padding:20px 24px;">
-			<h2><?php esc_html_e( 'Coming Soon — Under Creative', 'deepstudio' ); ?></h2>
-			<p><?php esc_html_e( 'Clicking Import will:', 'deepstudio' ); ?></p>
-			<ul style="list-style:disc;margin-left:20px;line-height:2">
-				<li><?php esc_html_e( 'Create a "Coming Soon" page (if it doesn\'t exist)', 'deepstudio' ); ?></li>
-				<li><?php esc_html_e( 'Set that page as the static front page', 'deepstudio' ); ?></li>
-				<li><?php esc_html_e( 'Create the DeepStudio Brief contact form in CF7 (or use existing)', 'deepstudio' ); ?></li>
-			</ul>
+		<p style="color:#666;margin-top:12px;">
+			<?php esc_html_e( 'Each import button deletes the existing page and recreates it fresh. The CF7 form is updated in place so submission history is not lost.', 'deepstudio' ); ?>
+		</p>
 
-			<p style="margin-top:16px;">
-				<strong><?php esc_html_e( 'After import:', 'deepstudio' ); ?></strong>
-				<?php esc_html_e( 'Go to Appearance → Customize → Coming Soon to edit the heading, sub-heading, and CF7 form ID.', 'deepstudio' ); ?>
-			</p>
+		<div style="display:flex;gap:24px;flex-wrap:wrap;margin-top:20px;">
 
-			<p style="margin-top:20px;">
-				<a href="<?php echo esc_url( wp_nonce_url(
-					admin_url( 'themes.php?page=deepstudio-demo-importer&action=import' ),
-					'deepstudio_import'
-				) ); ?>"
-				   class="button button-primary button-hero"
-				   onclick="return confirm('<?php esc_attr_e( 'Run the demo import now?', 'deepstudio' ); ?>');">
-					<?php esc_html_e( 'Import Demo Content', 'deepstudio' ); ?>
-				</a>
-			</p>
+			<!-- Card 1: Coming Soon -->
+			<div class="card" style="flex:1;min-width:300px;max-width:520px;padding:20px 24px;">
+				<h2><?php esc_html_e( 'Coming Soon — Particle Canvas', 'deepstudio' ); ?></h2>
+				<p><?php esc_html_e( 'Each click will:', 'deepstudio' ); ?></p>
+				<ul style="list-style:disc;margin-left:20px;line-height:2">
+					<li><?php esc_html_e( 'Delete any existing "Coming Soon" page and recreate it', 'deepstudio' ); ?></li>
+					<li><?php esc_html_e( 'Set it as the static front page', 'deepstudio' ); ?></li>
+					<li><?php esc_html_e( 'Update the CF7 form fields to the latest template', 'deepstudio' ); ?></li>
+				</ul>
+				<p style="margin-top:12px;">
+					<strong><?php esc_html_e( 'After import:', 'deepstudio' ); ?></strong>
+					<?php esc_html_e( 'Appearance → Customize → Coming Soon to edit heading, sub-heading, and CF7 form ID.', 'deepstudio' ); ?>
+				</p>
+				<p style="margin-top:20px;">
+					<a href="<?php echo esc_url( deepstudio_import_url( 'import' ) ); ?>"
+					   class="button button-primary button-hero"
+					   onclick="return confirm('<?php echo $confirm_cs; ?>');">
+						<?php esc_html_e( 'Import / Reimport Coming Soon', 'deepstudio' ); ?>
+					</a>
+				</p>
+			</div>
+
+			<!-- Card 2: Video Brief -->
+			<div class="card" style="flex:1;min-width:300px;max-width:520px;padding:20px 24px;">
+				<h2><?php esc_html_e( 'Video Brief — Looping Video + Form', 'deepstudio' ); ?></h2>
+				<p><?php esc_html_e( 'Each click will:', 'deepstudio' ); ?></p>
+				<ul style="list-style:disc;margin-left:20px;line-height:2">
+					<li><?php esc_html_e( 'Delete any existing "Video Brief" page and recreate it', 'deepstudio' ); ?></li>
+					<li><?php esc_html_e( 'Assign the Video Brief template to the new page', 'deepstudio' ); ?></li>
+					<li><?php esc_html_e( 'Update the CF7 form fields to the latest template', 'deepstudio' ); ?></li>
+				</ul>
+				<p style="margin-top:12px;">
+					<strong><?php esc_html_e( 'After import:', 'deepstudio' ); ?></strong>
+					<?php esc_html_e( 'Appearance → Customize → Video Brief to set the showreel video URL and CF7 form ID.', 'deepstudio' ); ?>
+				</p>
+				<p style="margin-top:20px;">
+					<a href="<?php echo esc_url( deepstudio_import_url( 'import_video' ) ); ?>"
+					   class="button button-primary button-hero"
+					   onclick="return confirm('<?php echo $confirm_vb; ?>');">
+						<?php esc_html_e( 'Import / Reimport Video Brief', 'deepstudio' ); ?>
+					</a>
+				</p>
+			</div>
+
 		</div>
 	</div>
 	<?php
@@ -76,9 +137,15 @@ function deepstudio_demo_importer_page() {
    ------------------------------------------------------------------ */
 add_action( 'admin_init', function () {
 	if (
-		! isset( $_GET['page'] )   || $_GET['page']   !== 'deepstudio-demo-importer' ||
-		! isset( $_GET['action'] ) || $_GET['action'] !== 'import'
+		! isset( $_GET['page'] ) || $_GET['page'] !== 'deepstudio-demo-importer' ||
+		! isset( $_GET['action'] )
 	) {
+		return;
+	}
+
+	$action = sanitize_key( $_GET['action'] );
+
+	if ( ! in_array( $action, array( 'import', 'import_video' ), true ) ) {
 		return;
 	}
 
@@ -88,97 +155,129 @@ add_action( 'admin_init', function () {
 
 	check_admin_referer( 'deepstudio_import' );
 
-	deepstudio_import_coming_soon_page();
-	deepstudio_import_configure_cf7();
+	if ( $action === 'import' ) {
+		deepstudio_import_coming_soon_page();
+		deepstudio_import_configure_cf7();
+		wp_safe_redirect( admin_url( 'themes.php?page=deepstudio-demo-importer&imported=1' ) );
+	} else {
+		deepstudio_import_video_brief_page();
+		deepstudio_import_configure_cf7_for_vb();
+		wp_safe_redirect( admin_url( 'themes.php?page=deepstudio-demo-importer&imported=2' ) );
+	}
 
-	wp_safe_redirect( admin_url( 'themes.php?page=deepstudio-demo-importer&imported=1' ) );
 	exit;
 } );
 
 /* ------------------------------------------------------------------
-   Create Coming Soon page + set as front page
+   Coming Soon: delete existing page, recreate, set as front page
    ------------------------------------------------------------------ */
 function deepstudio_import_coming_soon_page() {
-	$existing = get_page_by_title( 'Coming Soon' );
+	// Wipe any previous version (publish, draft, trash, etc.)
+	deepstudio_purge_pages( 'Coming Soon' );
 
-	if ( $existing ) {
-		$page_id = $existing->ID;
-	} else {
-		$page_id = wp_insert_post( array(
-			'post_title'   => 'Coming Soon',
-			'post_content' => '',
-			'post_status'  => 'publish',
-			'post_type'    => 'page',
-			'post_author'  => get_current_user_id(),
-		) );
-	}
+	$page_id = wp_insert_post( array(
+		'post_title'   => 'Coming Soon',
+		'post_content' => '',
+		'post_status'  => 'publish',
+		'post_type'    => 'page',
+		'post_author'  => get_current_user_id(),
+	) );
 
 	if ( is_wp_error( $page_id ) || ! $page_id ) {
 		return;
 	}
 
-	// Set as static front page (front-page.php auto-loads, no template meta needed)
+	// front-page.php auto-loads for the static front page — no template meta needed
 	update_option( 'show_on_front', 'page' );
 	update_option( 'page_on_front', $page_id );
 }
 
 /* ------------------------------------------------------------------
-   Create or detect CF7 form and save ID to Customizer
+   CF7 form: update in place (preserves submission history)
+   Creates the form if it doesn't exist yet.
    ------------------------------------------------------------------ */
 function deepstudio_import_configure_cf7() {
 	if ( ! class_exists( 'WPCF7' ) ) {
 		return;
 	}
 
-	// CF7 [radio] tag parser chokes on $ and – characters, so we use
-	// plain HTML radio buttons and sync the selection to a hidden CF7 field.
-	$form_template = '<div class="cf7-section">
-<p class="cf7-section-title"><span class="cf7-num">1</span> Brief</p>
-<p class="cf7-hint">Tell us about your project (AI / CGI / campaign)<br />Include your idea, goal, or any references</p>
-[textarea* project-brief placeholder "Describe your project..."]
+	$form_template = '<div class="field">
+<label>Project idea</label>
+[textarea* project-idea placeholder "Describe the campaign, product, launch, reference, location, or visual idea..."]
 </div>
 
-<div class="cf7-divider"></div>
-
-<div class="cf7-section">
-<p class="cf7-section-title"><span class="cf7-num">2</span> Budget Range</p>
-<div class="ds-budget-grid">
-<label class="ds-budget-item"><input type="radio" name="ds_budget" value="$3,000 – $5,000"><span class="ds-budget-label">$3,000 – $5,000</span></label>
-<label class="ds-budget-item"><input type="radio" name="ds_budget" value="$5,000 – $10,000"><span class="ds-budget-label">$5,000 – $10,000</span></label>
-<label class="ds-budget-item"><input type="radio" name="ds_budget" value="$10,000 – $15,000"><span class="ds-budget-label">$10,000 – $15,000</span></label>
-<label class="ds-budget-item"><input type="radio" name="ds_budget" value="$15,000+"><span class="ds-budget-label">$15,000+</span></label>
+<div class="brief-grid">
+<div class="field">
+<label>Service</label>
+[select* service "AI Commercial Production" "CGI / FOOH Activation" "Premium Video Production" "Hybrid AI + CGI + VFX" "Not sure yet"]
 </div>
-[hidden budget ""]
+<div class="field">
+<label>Budget</label>
+[select* budget "$3,000 – $5,000" "$5,000 – $10,000" "$10,000 – $15,000" "$15,000+" "Not confirmed yet"]
+</div>
 </div>
 
-<div class="cf7-divider"></div>
-
-<div class="cf7-section">
-<p class="cf7-section-title"><span class="cf7-num">3</span> Contact Info</p>
-[text* your-name placeholder "Name"]
-[email* your-email placeholder "Email"]
-[text* your-phone placeholder "Phone"]
-[text your-company placeholder "Company Name (optional)"]
+<div class="brief-grid">
+<div class="field">
+<label>Name</label>
+[text* your-name placeholder "Your name"]
+</div>
+<div class="field">
+<label>Company</label>
+[text your-company placeholder "Company name"]
+</div>
 </div>
 
-[submit "Submit Brief"]';
+<div class="brief-grid">
+<div class="field">
+<label>Email</label>
+[email* your-email placeholder "name@company.com"]
+</div>
+<div class="field">
+<label>WhatsApp</label>
+[tel* your-phone placeholder "+971..."]
+</div>
+</div>
 
-	// Find existing form — update its content rather than creating a duplicate
+<div class="submit-row">
+[submit "Submit Brief"]
+</div>
+
+<div class="form-note">For faster response, send references or a short voice note through WhatsApp.</div>';
+
+	$mail_body = "Project idea:\n[project-idea]\n\nService: [service]\nBudget: [budget]\n\nName: [your-name]\nEmail: [your-email]\nWhatsApp: [your-phone]\nCompany: [your-company]";
+	$host      = parse_url( home_url(), PHP_URL_HOST );
+
+	// Find the canonical DeepStudio Brief form
 	$forms = get_posts( array(
 		'post_type'      => 'wpcf7_contact_form',
-		'posts_per_page' => 1,
 		'post_status'    => 'publish',
+		'posts_per_page' => 1,
 		'orderby'        => 'ID',
 		'order'          => 'ASC',
+		'no_found_rows'  => true,
 	) );
 
 	if ( ! empty( $forms ) ) {
+		// Update existing — keeps Flamingo submission history intact
 		$form_id = absint( $forms[0]->ID );
 		update_post_meta( $form_id, '_form', $form_template );
+		update_post_meta( $form_id, '_mail', array(
+			'active'        => true,
+			'recipient'     => get_option( 'admin_email' ),
+			'sender'        => get_bloginfo( 'name' ) . ' <wordpress@' . $host . '>',
+			'subject'       => 'New Brief — [your-name]',
+			'body'          => $mail_body,
+			'attachments'   => '',
+			'use_html'      => false,
+			'exclude_blank' => false,
+		) );
 		set_theme_mod( 'deepstudio_cf7_id', $form_id );
+		set_theme_mod( 'deepstudio_vb_cf7_id', $form_id );
 		return;
 	}
 
+	// First-time install — create the form
 	$form_id = wp_insert_post( array(
 		'post_title'  => 'DeepStudio Brief',
 		'post_type'   => 'wpcf7_contact_form',
@@ -192,18 +291,45 @@ function deepstudio_import_configure_cf7() {
 
 	update_post_meta( $form_id, '_form', $form_template );
 	update_post_meta( $form_id, '_locale', get_locale() );
-
-	$host = parse_url( home_url(), PHP_URL_HOST );
 	update_post_meta( $form_id, '_mail', array(
 		'active'        => true,
 		'recipient'     => get_option( 'admin_email' ),
 		'sender'        => get_bloginfo( 'name' ) . ' <wordpress@' . $host . '>',
 		'subject'       => 'New Brief — [your-name]',
-		'body'          => "Brief:\n[project-brief]\n\nBudget: [budget]\n\nName: [your-name]\nEmail: [your-email]\nPhone: [your-phone]\nCompany: [your-company]",
+		'body'          => $mail_body,
 		'attachments'   => '',
 		'use_html'      => false,
 		'exclude_blank' => false,
 	) );
 
 	set_theme_mod( 'deepstudio_cf7_id', $form_id );
+	set_theme_mod( 'deepstudio_vb_cf7_id', $form_id );
+}
+
+/* ------------------------------------------------------------------
+   Video Brief: delete existing page, recreate with template assigned
+   ------------------------------------------------------------------ */
+function deepstudio_import_video_brief_page() {
+	deepstudio_purge_pages( 'Video Brief' );
+
+	$page_id = wp_insert_post( array(
+		'post_title'   => 'Video Brief',
+		'post_content' => '',
+		'post_status'  => 'publish',
+		'post_type'    => 'page',
+		'post_author'  => get_current_user_id(),
+	) );
+
+	if ( is_wp_error( $page_id ) || ! $page_id ) {
+		return;
+	}
+
+	update_post_meta( $page_id, '_wp_page_template', 'page-video-brief.php' );
+}
+
+/* ------------------------------------------------------------------
+   CF7 for Video Brief — delegates to the shared configure function
+   ------------------------------------------------------------------ */
+function deepstudio_import_configure_cf7_for_vb() {
+	deepstudio_import_configure_cf7();
 }

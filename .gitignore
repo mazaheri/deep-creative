@@ -1,0 +1,6 @@
+# Video files — hosted externally at deepcreative.studio
+assets/videos/
+
+# OS
+.DS_Store
+Thumbs.db

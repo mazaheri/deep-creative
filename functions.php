@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'DEEPSTUDIO_VERSION', '1.0.0' );
+define( 'DEEPSTUDIO_VERSION', '1.0.1' );
 
 function deepstudio_setup() {
 	load_theme_textdomain( 'deepstudio', get_template_directory() . '/languages' );
@@ -44,14 +44,16 @@ function deepstudio_enqueue_assets() {
 		null
 	);
 
-	// Tailwind CSS (CDN utility layer used by original template)
-	wp_enqueue_script(
-		'tailwind',
-		'https://cdn.tailwindcss.com',
-		array(),
-		null,
-		false // must load in <head> so utilities are available before paint
-	);
+	// Tailwind CSS (CDN utility layer — not loaded on Video Brief which has its own CSS)
+	if ( ! is_page_template( 'page-video-brief.php' ) ) {
+		wp_enqueue_script(
+			'tailwind',
+			'https://cdn.tailwindcss.com',
+			array(),
+			null,
+			false
+		);
+	}
 
 	// Theme stylesheet
 	wp_enqueue_style(
@@ -61,36 +63,62 @@ function deepstudio_enqueue_assets() {
 		DEEPSTUDIO_VERSION
 	);
 
-	// Coming Soon neon form styles
-	wp_enqueue_style(
-		'deepstudio-coming-soon',
-		get_template_directory_uri() . '/assets/css/coming-soon.css',
-		array( 'deepstudio-style' ),
-		DEEPSTUDIO_VERSION
-	);
+	if ( is_page_template( 'page-video-brief.php' ) ) {
+		// Video Brief: completely different design — own CSS + form JS, no particles
+		wp_enqueue_style(
+			'deepstudio-video-brief',
+			get_template_directory_uri() . '/assets/css/video-brief.css',
+			array(),
+			DEEPSTUDIO_VERSION
+		);
 
-	// Particle animation script (loaded in footer so DOM is ready)
-	wp_enqueue_script(
-		'deepstudio-particles',
-		get_template_directory_uri() . '/assets/js/particles.js',
-		array(),
-		DEEPSTUDIO_VERSION,
-		true
-	);
+		wp_enqueue_script(
+			'deepstudio-video-brief-form',
+			get_template_directory_uri() . '/assets/js/video-brief-form.js',
+			array(),
+			DEEPSTUDIO_VERSION,
+			true
+		);
 
-	// Pass the logo URL to the JS so it resolves correctly in WordPress
-	wp_localize_script( 'deepstudio-particles', 'deepstudioData', array(
-		'logoSrc' => esc_url( get_template_directory_uri() . '/assets/images/deep-logo.png' ),
-	) );
+		wp_enqueue_script(
+			'deepstudio-flicker',
+			get_template_directory_uri() . '/assets/js/flicker.js',
+			array(),
+			DEEPSTUDIO_VERSION,
+			true
+		);
+	} else {
+		// Coming Soon neon form styles (particle page only)
+		wp_enqueue_style(
+			'deepstudio-coming-soon',
+			get_template_directory_uri() . '/assets/css/coming-soon.css',
+			array( 'deepstudio-style' ),
+			DEEPSTUDIO_VERSION
+		);
 
-	// Thank-you screen + WhatsApp button after CF7 submission
-	wp_enqueue_script(
-		'deepstudio-form-thankyou',
-		get_template_directory_uri() . '/assets/js/form-thankyou.js',
-		array( 'deepstudio-particles' ),
-		DEEPSTUDIO_VERSION,
-		true
-	);
+		// Particle animation script (loaded in footer so DOM is ready)
+		wp_enqueue_script(
+			'deepstudio-particles',
+			get_template_directory_uri() . '/assets/js/particles.js',
+			array(),
+			DEEPSTUDIO_VERSION,
+			true
+		);
+
+		// Pass the logo URL to the JS so it resolves correctly in WordPress
+		wp_localize_script( 'deepstudio-particles', 'deepstudioData', array(
+			'logoSrc' => esc_url( get_template_directory_uri() . '/assets/images/deep-logo.png' ),
+		) );
+
+		// Thank-you screen + WhatsApp button after CF7 submission
+		wp_enqueue_script(
+			'deepstudio-form-thankyou',
+			get_template_directory_uri() . '/assets/js/form-thankyou.js',
+			array( 'deepstudio-particles' ),
+			DEEPSTUDIO_VERSION,
+			true
+		);
+	}
 }
 add_action( 'wp_enqueue_scripts', 'deepstudio_enqueue_assets' );
 
@@ -155,6 +183,36 @@ add_action( 'customize_register', function ( $wp_customize ) {
 		'label'       => __( 'Contact Form 7 — Form ID', 'deepstudio' ),
 		'description' => __( 'Enter the numeric ID of your CF7 form (found in CF7 form list).', 'deepstudio' ),
 		'section'     => 'deepstudio_coming_soon',
+		'type'        => 'number',
+	) );
+
+	/* ---- Video Brief section ---- */
+	$wp_customize->add_section( 'deepstudio_video_brief', array(
+		'title'    => __( 'Video Brief', 'deepstudio' ),
+		'priority' => 31,
+	) );
+
+	// Showreel video URL
+	$wp_customize->add_setting( 'deepstudio_vb_video_url', array(
+		'default'           => 'http://deepcreative.studio/wp-content/uploads/videos/Hero%20Video%20Loop%20lQ.mp4',
+		'sanitize_callback' => 'esc_url_raw',
+	) );
+	$wp_customize->add_control( 'deepstudio_vb_video_url', array(
+		'label'       => __( 'Showreel Video URL (.mp4)', 'deepstudio' ),
+		'description' => __( 'Leave empty to use the bundled hero-loop.mp4 from the theme.', 'deepstudio' ),
+		'section'     => 'deepstudio_video_brief',
+		'type'        => 'url',
+	) );
+
+	// CF7 form ID
+	$wp_customize->add_setting( 'deepstudio_vb_cf7_id', array(
+		'default'           => 0,
+		'sanitize_callback' => 'absint',
+	) );
+	$wp_customize->add_control( 'deepstudio_vb_cf7_id', array(
+		'label'       => __( 'Contact Form 7 — Form ID', 'deepstudio' ),
+		'description' => __( 'Enter the numeric ID of the brief CF7 form.', 'deepstudio' ),
+		'section'     => 'deepstudio_video_brief',
 		'type'        => 'number',
 	) );
 } );
