@@ -5,6 +5,14 @@
  * @package DeepStudio
  */
 
+// If the front page has a different template assigned (e.g. Video Brief),
+// hand off to that template so WordPress's front-page.php override doesn't swallow it.
+$assigned = get_page_template_slug( get_queried_object_id() );
+if ( $assigned && $assigned !== 'front-page.php' ) {
+	locate_template( $assigned, true, false );
+	exit;
+}
+
 get_header();
 
 $uc_title    = esc_html( get_theme_mod( 'deepstudio_cs_title',    'Deep Creative Studio'                                   ) );
