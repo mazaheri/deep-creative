@@ -17,7 +17,7 @@
         );
         if (!tel) return;
 
-        /* Fix label — search all labels in the card for "WhatsApp" text */
+        /* Fix label */
         document.querySelectorAll('.brief-card label').forEach(function (lbl) {
             if (/whatsapp/i.test(lbl.textContent)) {
                 Array.from(lbl.childNodes).forEach(function (node) {
@@ -28,55 +28,71 @@
             }
         });
 
-        /* Remove conflicting placeholder */
+        /* Fix placeholder */
         tel.placeholder = '50 123 4567';
         tel.autocomplete = 'tel-national';
 
-        /* Datalist for suggestions — user can still type any code freely */
-        var listId = 'phone-cc-list';
-        if (!document.getElementById(listId)) {
-            var dl = document.createElement('datalist');
-            dl.id = listId;
-            COUNTRIES.forEach(function (c) {
-                var opt = document.createElement('option');
-                opt.value = c[0];
-                opt.label = c[1];
-                dl.appendChild(opt);
-            });
-            document.body.appendChild(dl);
-        }
-
-        /* Country-code input — lives OUTSIDE .wpcf7-form-control-wrap so CF7 ignores it */
-        var cc = document.createElement('input');
-        cc.type = 'text';
+        /* Country-code <select> with common codes + Other */
+        var cc = document.createElement('select');
         cc.className = 'phone-cc';
-        cc.setAttribute('list', listId);
         cc.setAttribute('aria-label', 'Country code');
-        cc.setAttribute('autocomplete', 'tel-country-code');
-        cc.value = '+971';
-        cc.placeholder = '+971';
 
-        /*
-         * Wrap the cc input + the entire .wpcf7-form-control-wrap span together.
-         * This keeps the tel input untouched inside its CF7 span while the cc
-         * input sits cleanly alongside it as a sibling — no CF7 interference.
-         */
+        COUNTRIES.forEach(function (c) {
+            var opt = document.createElement('option');
+            opt.value = c[0];
+            opt.textContent = c[0] + '  ' + c[1];
+            if (c[0] === '+971') opt.selected = true;
+            cc.appendChild(opt);
+        });
+
+        var otherOpt = document.createElement('option');
+        otherOpt.value = 'other';
+        otherOpt.textContent = 'Other…';
+        cc.appendChild(otherOpt);
+
+        /* Text input revealed only when "Other" is selected */
+        var ccCustom = document.createElement('input');
+        ccCustom.type = 'text';
+        ccCustom.className = 'phone-cc-custom';
+        ccCustom.placeholder = '+XX';
+        ccCustom.setAttribute('aria-label', 'Enter country code');
+        ccCustom.style.display = 'none';
+
+        cc.addEventListener('change', function () {
+            if (cc.value === 'other') {
+                ccCustom.style.display = '';
+                ccCustom.focus();
+            } else {
+                ccCustom.style.display = 'none';
+                ccCustom.value = '';
+            }
+        });
+
+        /* cc-wrap: select stacked above the optional custom input */
+        var ccWrap = document.createElement('div');
+        ccWrap.className = 'phone-cc-wrap';
+        ccWrap.appendChild(cc);
+        ccWrap.appendChild(ccCustom);
+
+        /* Move the entire CF7 span next to cc-wrap — keeps CF7 happy */
         var cfWrap = tel.closest('.wpcf7-form-control-wrap') || tel.parentNode;
         var fieldContainer = cfWrap.parentNode;
 
         var wrapper = document.createElement('div');
         wrapper.className = 'phone-field-wrap';
         fieldContainer.insertBefore(wrapper, cfWrap);
-        wrapper.appendChild(cc);
+        wrapper.appendChild(ccWrap);
         wrapper.appendChild(cfWrap);
 
-        /* On submit: strip leading zeros and prepend country code */
+        /* On submit: prepend country code, strip leading zeros */
         var form = tel.closest('form');
         if (form) {
             form.addEventListener('submit', function () {
                 var num = tel.value.trim();
                 if (num && !/^\+/.test(num)) {
-                    var code = (cc.value.trim() || '+971').replace(/(?!^\+)[^\d]/g, '');
+                    var code = cc.value === 'other'
+                        ? (ccCustom.value.trim() || '+971').replace(/(?!^\+)[^\d]/g, '')
+                        : cc.value;
                     tel.value = code + num.replace(/^0+/, '');
                 }
             }, true);

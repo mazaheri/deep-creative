@@ -630,27 +630,41 @@ h1 {
 .phone-field-wrap {
   display: flex;
   gap: 0;
-  align-items: stretch;
+  align-items: flex-start;
 }
 
-/* The CF7 span becomes a flex child; it must stretch to fill remaining space */
+/* Left column: select + optional custom input stacked */
+.phone-cc-wrap {
+  width: 140px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Country code select */
+.phone-cc {
+  width: 100% !important;
+  border-right: none !important;
+  border-radius: 16px 0 0 16px !important;
+  color: var(--cyan2) !important;
+}
+
+/* "Other" text input — appears below the select */
+.phone-cc-custom {
+  width: 100% !important;
+  border-right: none !important;
+  border-radius: 16px 0 0 16px !important;
+  color: var(--cyan2) !important;
+}
+
+/* Right column: CF7 span fills remaining space */
 .phone-field-wrap .wpcf7-form-control-wrap {
   flex: 1;
   min-width: 0;
   display: block;
 }
 
-/* Country code — left pill on desktop */
-.phone-cc {
-  width: 130px !important;
-  flex-shrink: 0;
-  border-right: none !important;
-  border-radius: 16px 0 0 16px !important;
-  color: var(--cyan2) !important;
-  background-image: none !important;
-}
-
-/* Number input — right pill on desktop */
 .phone-field-wrap .wpcf7-form-control-wrap input[type="tel"],
 .phone-field-wrap .wpcf7-form-control-wrap input.wpcf7-tel {
   width: 100% !important;
@@ -659,6 +673,7 @@ h1 {
 }
 
 .phone-field-wrap:focus-within .phone-cc,
+.phone-field-wrap:focus-within .phone-cc-custom,
 .phone-field-wrap:focus-within .wpcf7-form-control-wrap input {
   border-color: rgba(124,247,255,.74);
 }
@@ -728,12 +743,10 @@ h1 {
   .button.whatsapp { left: 14px; right: 14px; bottom: 14px; width: auto; }
 
   /* Phone field: stack country code above number on mobile */
-  .phone-field-wrap {
-    flex-direction: column;
-    gap: 8px;
-  }
-  .phone-cc {
-    width: 100% !important;
+  .phone-field-wrap { flex-direction: column; gap: 8px; }
+  .phone-cc-wrap { width: 100%; }
+  .phone-cc,
+  .phone-cc-custom {
     border-right: 1px solid rgba(124,247,255,.18) !important;
     border-radius: 16px !important;
   }
