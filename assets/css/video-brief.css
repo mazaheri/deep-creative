@@ -38,9 +38,9 @@ body {
   background:
     linear-gradient(90deg, rgba(2,5,9,.38) 0%, rgba(2,5,9,.22) 36%, rgba(2,5,9,.04) 68%, rgba(2,5,9,.00) 100%),
     linear-gradient(180deg, rgba(2,5,9,.04) 0%, rgba(2,5,9,.20) 72%, rgba(2,5,9,.52) 100%),
-    url('../images/hero-bg.webp');
+    url('../images/hero-bg-desktop.webp');
   background-size: cover;
-  background-position: right center;
+  background-position: center center;
   filter: saturate(.96) contrast(1.05);
 }
 
@@ -705,7 +705,6 @@ h1 {
 }
 
 @media (max-width: 920px) {
-  .hero-wall { background-position: right center; }
 
   .hero {
     grid-template-columns: 1fr;
@@ -722,7 +721,12 @@ h1 {
 
 @media (max-width: 700px) {
   .hero-wall {
-    background-position: right center;
+    background-image:
+      linear-gradient(90deg, rgba(2,5,9,.38) 0%, rgba(2,5,9,.22) 36%, rgba(2,5,9,.04) 68%, rgba(2,5,9,.00) 100%),
+      linear-gradient(180deg, rgba(2,5,9,.04) 0%, rgba(2,5,9,.20) 72%, rgba(2,5,9,.52) 100%),
+      url('../images/hero-bg-mobile.webp');
+    background-position: center center;
+    background-size: cover;
     filter: saturate(.96) contrast(1.05) brightness(0.68);
   }
   .page { width: min(calc(100% - 28px), 640px); }
